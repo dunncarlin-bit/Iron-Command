@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>IRON COMMAND — WW2 Strategy</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;700&family=Share+Tech+Mono&family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<!-- ═══ GOOGLE ADSENSE ═══ -->
+<!-- STEP 1: Replace ca-pub-XXXXXXXXXXXXXXXX with your real AdSense Publisher ID -->
+<!-- STEP 2: Replace the ad-slot values with your real Ad Unit IDs from AdSense dashboard -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+<style>
+:root {
+  --khaki: #c8b97a;
+  --khaki-dark: #8a7d45;
+  --khaki-light: #e8d9a0;
+  --olive: #4a5240;
+  --olive-dark: #2a3020;
+  --olive-mid: #3a4230;
+  --rust: #8b3a1a;
+  --rust-light: #c45a2a;
+  --cream: #f0e8d0;
+  --cream-dark: #d4c89a;
+  --steel: #3a4a5a;
+  --steel-light: #5a7a8a;
+  --map-sea: #1a3a4a;
+  --map-land: #4a5c3a;
+  --map-enemy: #6a2a1a;
+  --map-ally: #1a4a6a;
+  --map-neutral: #3a4a2a;
+  --gold: #d4a820;
+  --silver: #8a9aaa;
+  --danger: #c02020;
+  --success: #2a8a2a;
+  --panel-bg: rgba(20,24,18,0.95);
+  --panel-border: rgba(200,185,122,0.3);
+  --font-display: 'Oswald', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+  --font-body: 'Crimson Pro', serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  background: var(--olive-dark);
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.5;
+  overflow: hidden;
+  height: 100dvh;
+  width: 100vw;
+  user-select: none;
+}
+
+/* ── SCREENS ── */
+.screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
+.screen.active { display: flex; }
+
+/* ── TITLE SCREEN ── */
+#title-screen {
+  background: radial-gradient(ellipse at 50% 30%, #2a3a20 0%, #0a1008 100%);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0;
+}
+
+.title-emblem {
+  width: 100px; height: 100px;
+  border: 3px solid var(--khaki);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 1.5rem;
+  position: relative;
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+.title-emblem::before {
+  content: '';
+  position: absolute; inset: 6px;
+  border: 1px solid rgba(200,185,122,0.4);
+  border-radius: 50%;
+}
+.title-emblem svg { width: 54px; height: 54px; fill: var(--khaki); }
+
+@keyframes pulse-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(200,185,122,0.3); }
+  50% { box-shadow: 0 0 0 12px rgba(200,185,122,0); }
+}
+
+.title-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.25em;
+  color: var(--khaki-dark);
+  margin-bottom: 0.4rem;
+}
+
+h1.game-title {
+  font-family: var(--font-display);
+  font-size: clamp(2.8rem, 10vw, 4.5rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--khaki);
+  line-height: 0.9;
+  text-shadow: 0 2px 20px rgba(200,185,122,0.3);
+  margin-bottom: 0.3rem;
+}
+
+.title-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--khaki-dark);
+  margin-bottom: 2.5rem;
+}
+
+.title-divider {
+  width: 120px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--khaki), transparent);
+  margin: 0 auto 2rem;
+}
+
+.menu-btn {
+  display: block;
+  width: 220px;
+  padding: 0.85rem 1.5rem;
+  margin: 0 auto 0.6rem;
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--cream);
+  font-family: var(--font-display);
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.menu-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--khaki);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.2s;
+  z-index: 0;
+}
+.menu-btn:active::before, .menu-btn.primary::before { transform: scaleX(1); }
+.menu-btn.primary { border-color: var(--khaki); color: var(--olive-dark); }
+.menu-btn.primary::before { transform: scaleX(1); }
+.menu-btn span { position: relative; z-index: 1; }
+.menu-btn.primary span { color: var(--olive-dark); font-weight: 700; }
+.menu-btn:active span { color: var(--olive-dark); }
+
+.title-version {
+  position: absolute; bottom: 1rem;
+  font-family: var(--font-mono); font-size: 9px;
+  color: rgba(200,185,122,0.3); letter-spacing: 0.15em;
+}
+
+/* ── HUD TOP ── */
+#hud-top {
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--panel-border);
+  padding: 0.5rem 0.75rem;
+  display: flex; align-items: center; gap: 0.75rem;
+  flex-shrink: 0; z-index: 10;
+}
+
+.hud-label {
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.15em; color: var(--khaki-dark);
+  display: block; margin-bottom: 1px;
+}
+.hud-value {
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--khaki); font-weight: 500;
+}
+
+.resource-block { flex: 1; text-align: center; }
+
+.hud-turn {
+  background: var(--khaki);
+  color: var(--olive-dark);
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border: none;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── MAP ── */
+#map-container {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background: var(--map-sea);
+  touch-action: pan-x pan-y;
+}
+
+#map-canvas {
+  position: absolute;
+  cursor: pointer;
+  image-rendering: pixelated;
+}
+
+/* Territory overlays */
+.territory {
+  position: absolute;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  border: 1.5px solid rgba(0,0,0,0.4);
+}
+.territory:active { transform: scale(0.97); filter: brightness(1.2); }
+.territory.player { background: rgba(26,74,106,0.85); border-color: rgba(100,180,220,0.6); }
+.territory.enemy { background: rgba(106,42,26,0.85); border-color: rgba(220,100,80,0.6); }
+.territory.ally { background: rgba(26,106,42,0.85); border-color: rgba(100,220,130,0.6); }
+.territory.neutral { background: rgba(58,74,42,0.75); border-color: rgba(150,160,100,0.4); }
+.territory.selected { border-color: var(--khaki) !important; border-width: 2.5px !important; filter: brightness(1.3); }
+.territory.target { border-color: var(--rust-light) !important; border-width: 2px !important; animation: target-pulse 0.8s ease-in-out infinite alternate; }
+
+@keyframes target-pulse {
+  from { filter: brightness(1); }
+  to { filter: brightness(1.4); }
+}
+
+.terr-name { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-align: center; line-height: 1.2; }
+.terr-troops { font-family: var(--font-display); font-size: 11px; font-weight: 700; color: #fff; }
+.terr-flag { font-size: 14px; line-height: 1; }
+
+/* ── BOTTOM PANEL ── */
+#bottom-panel {
+  background: var(--panel-bg);
+  border-top: 1px solid var(--panel-border);
+  padding: 0.5rem 0.75rem 0.6rem;
+  flex-shrink: 0; z-index: 10;
+  min-height: 130px;
+}
+
+.panel-tabs {
+  display: flex; gap: 0.3rem; margin-bottom: 0.5rem;
+}
+.panel-tab {
+  flex: 1; padding: 0.3rem; background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--cream-dark); font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.1em; cursor: pointer;
+  transition: all 0.15s;
+}
+.panel-tab.active {
+  background: var(--khaki); color: var(--olive-dark);
+  border-color: var(--khaki); font-weight: 700;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Action buttons */
+.action-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem;
+}
+.action-btn {
+  padding: 0.5rem 0.2rem;
+  background: rgba(200,185,122,0.08);
+  border: 1px solid var(--panel-border);
+  color: var(--cream); font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.05em; cursor: pointer;
+  text-align: center; transition: all 0.15s;
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.action-btn .icon { font-size: 16px; display: block; }
+.action-btn:active, .action-btn.selected {
+  background: rgba(200,185,122,0.2); border-color: var(--khaki);
+}
+.action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+/* Territory info */
+.terr-info {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+}
+.terr-info-main { flex: 1; }
+.terr-info-name {
+  font-family: var(--font-display); font-size: 1.1rem;
+  color: var(--khaki); letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+.terr-info-stats {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--cream-dark); line-height: 1.8;
+}
+.stat-row { display: flex; gap: 0.5rem; }
+.stat-pill {
+  background: rgba(200,185,122,0.1); border: 1px solid var(--panel-border);
+  padding: 1px 6px; font-family: var(--font-mono); font-size: 9px;
+  color: var(--khaki-dark);
+}
+.attack-btn {
+  padding: 0.6rem 1rem;
+  background: var(--rust);
+  border: 1px solid var(--rust-light);
+  color: var(--cream); font-family: var(--font-display);
+  font-size: 0.85rem; letter-spacing: 0.1em; cursor: pointer;
+  align-self: center; flex-shrink: 0;
+  transition: all 0.15s;
+}
+.attack-btn:active { background: var(--rust-light); transform: scale(0.97); }
+
+/* ── GENERALS PANEL ── */
+.general-scroll {
+  display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem;
+  scrollbar-width: none;
+}
+.general-scroll::-webkit-scrollbar { display: none; }
+
+.general-card {
+  flex-shrink: 0; width: 80px;
+  background: rgba(200,185,122,0.06);
+  border: 1px solid var(--panel-border);
+  padding: 0.4rem; text-align: center; cursor: pointer;
+  transition: all 0.15s; position: relative;
+}
+.general-card.assigned { border-color: var(--gold); }
+.general-card:active { border-color: var(--khaki); background: rgba(200,185,122,0.15); }
+.general-avatar { font-size: 26px; display: block; margin-bottom: 2px; }
+.general-name { font-family: var(--font-mono); font-size: 8px; color: var(--cream); line-height: 1.2; }
+.general-stars { color: var(--gold); font-size: 9px; }
+.general-level { position: absolute; top: 2px; right: 2px; background: var(--gold); color: var(--olive-dark); font-family: var(--font-mono); font-size: 7px; padding: 0 2px; font-weight: 700; }
+
+/* ── AI CO-PILOT ── */
+#ai-panel {
+  position: absolute; bottom: 130px; left: 0; right: 0;
+  background: var(--panel-bg);
+  border-top: 1px solid var(--panel-border);
+  border-bottom: 1px solid var(--panel-border);
+  padding: 0.6rem 0.75rem;
+  transform: translateY(100%);
+  transition: transform 0.3s ease;
+  z-index: 20; max-height: 200px; overflow-y: auto;
+}
+#ai-panel.open { transform: translateY(0); }
+
+.ai-header {
+  display: flex; align-items: center; gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.ai-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  animation: ai-blink 1.5s ease-in-out infinite;
+}
+@keyframes ai-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.ai-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--khaki-dark); }
+.ai-close { margin-left: auto; background: none; border: none; color: var(--cream-dark); font-size: 14px; cursor: pointer; padding: 0 4px; }
+
+.ai-message {
+  font-family: var(--font-body); font-size: 13px;
+  color: var(--cream); line-height: 1.6;
+  border-left: 2px solid var(--steel-light);
+  padding-left: 0.6rem;
+  margin-bottom: 0.4rem;
+}
+.ai-loading { font-family: var(--font-mono); font-size: 10px; color: var(--khaki-dark); letter-spacing: 0.1em; }
+
+/* AI trigger button */
+#ai-trigger {
+  position: absolute; top: 50%; right: 0.75rem;
+  transform: translateY(-50%);
+  background: var(--steel); border: 1px solid var(--steel-light);
+  color: var(--cream); padding: 0.3rem 0.5rem;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+  cursor: pointer; z-index: 11; border-radius: 2px;
+  white-space: nowrap;
+}
+
+/* ── MODALS ── */
+.modal-overlay {
+  position: absolute; inset: 0;
+  background: rgba(10,16,8,0.88);
+  z-index: 50; display: none;
+  align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: #1a2018;
+  border: 1px solid var(--panel-border);
+  width: 100%; max-width: 380px;
+  max-height: 80dvh; overflow-y: auto;
+  padding: 1.25rem;
+}
+.modal-title {
+  font-family: var(--font-display); font-size: 1.3rem;
+  letter-spacing: 0.08em; color: var(--khaki);
+  margin-bottom: 0.25rem;
+}
+.modal-sub { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); letter-spacing: 0.12em; margin-bottom: 1rem; }
+.modal-divider { border: none; border-top: 1px solid var(--panel-border); margin: 0.75rem 0; }
+.modal-close {
+  margin-top: 1rem; width: 100%;
+  padding: 0.6rem; background: transparent;
+  border: 1px solid var(--panel-border); color: var(--cream-dark);
+  font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.1em;
+  cursor: pointer;
+}
+.modal-close:active { background: rgba(200,185,122,0.1); }
+
+/* Upgrade list */
+.upgrade-row {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.5rem 0; border-bottom: 1px solid rgba(200,185,122,0.1);
+}
+.upgrade-icon { font-size: 20px; flex-shrink: 0; }
+.upgrade-info { flex: 1; }
+.upgrade-name { font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.05em; }
+.upgrade-desc { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); }
+.upgrade-btn {
+  padding: 0.35rem 0.6rem;
+  background: transparent; border: 1px solid var(--khaki);
+  color: var(--khaki); font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+}
+.upgrade-btn:active { background: var(--khaki); color: var(--olive-dark); }
+.upgrade-btn.maxed { border-color: var(--gold); color: var(--gold); cursor: default; }
+
+/* Battle result */
+.battle-result { text-align: center; padding: 0.5rem 0; }
+.result-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+.result-title { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: 0.1em; }
+.result-title.victory { color: var(--gold); }
+.result-title.defeat { color: var(--danger); }
+.result-detail { font-family: var(--font-mono); font-size: 10px; color: var(--cream-dark); margin-top: 0.5rem; line-height: 1.8; }
+
+/* Notification */
+#notif {
+  position: absolute; top: 52px; left: 50%; transform: translateX(-50%);
+  background: var(--panel-bg); border: 1px solid var(--panel-border);
+  padding: 0.4rem 1rem; font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0.08em; color: var(--khaki);
+  z-index: 30; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none; white-space: nowrap;
+}
+#notif.show { opacity: 1; }
+
+/* Progress bar */
+.prog-bar-wrap { background: rgba(200,185,122,0.1); border: 1px solid var(--panel-border); height: 6px; margin-top: 2px; }
+.prog-bar { height: 100%; background: var(--khaki); transition: width 0.4s; }
+.prog-bar.hp { background: var(--success); }
+.prog-bar.hp.low { background: var(--danger); }
+
+/* Turn log */
+#turn-log {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--cream-dark); line-height: 1.9; letter-spacing: 0.03em;
+}
+.log-entry { display: flex; gap: 0.4rem; }
+.log-entry .tag { color: var(--khaki-dark); flex-shrink: 0; }
+.log-entry.enemy .tag { color: #c06060; }
+.log-entry.good .tag { color: #60c060; }
+
+/* ── CAMPAIGN SCREEN ── */
+#campaign-screen {
+  background: #0e1610;
+}
+
+.campaign-header {
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--panel-border);
+  padding: 0.75rem 1rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.back-btn {
+  background: none; border: 1px solid var(--panel-border);
+  color: var(--cream-dark); padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono); font-size: 10px; cursor: pointer;
+}
+.campaign-title { font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.08em; color: var(--khaki); }
+
+.campaign-list { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+
+.mission-card {
+  background: rgba(200,185,122,0.05);
+  border: 1px solid var(--panel-border);
+  padding: 0.75rem 1rem; cursor: pointer; transition: all 0.15s;
+  display: flex; align-items: center; gap: 1rem;
+}
+.mission-card:active { background: rgba(200,185,122,0.12); border-color: var(--khaki); }
+.mission-card.locked { opacity: 0.5; cursor: not-allowed; }
+.mission-card.completed { border-color: var(--gold); }
+
+.mission-num {
+  font-family: var(--font-display); font-size: 1.8rem; font-weight: 700;
+  color: rgba(200,185,122,0.2); flex-shrink: 0; width: 2.5rem; text-align: center;
+}
+.mission-info { flex: 1; }
+.mission-name { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.05em; color: var(--cream); }
+.mission-desc { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); margin-top: 2px; }
+.mission-difficulty {
+  display: flex; gap: 2px;
+}
+.diff-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--panel-border); }
+.diff-pip.filled { background: var(--rust-light); }
+.mission-stars { color: var(--gold); font-size: 13px; }
+
+/* ── SANDBOX MODE ── */
+#sandbox-banner {
+  background: linear-gradient(90deg, rgba(212,168,32,0.15), transparent);
+  border: 1px solid rgba(212,168,32,0.3);
+  padding: 0.3rem 0.6rem;
+  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
+  color: var(--gold); display: none;
+}
+
+/* Resource fill in sandbox */
+.sandbox-fill-btn {
+  background: rgba(212,168,32,0.15); border: 1px solid rgba(212,168,32,0.4);
+  color: var(--gold); font-family: var(--font-mono); font-size: 9px;
+  padding: 0.25rem 0.5rem; cursor: pointer; letter-spacing: 0.08em;
+}
+
+/* ── RECRUIT MODAL ── */
+.recruit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.recruit-card {
+  background: rgba(200,185,122,0.05);
+  border: 1px solid var(--panel-border);
+  padding: 0.6rem; text-align: center; cursor: pointer;
+  transition: all 0.15s;
+}
+.recruit-card:active { border-color: var(--khaki); background: rgba(200,185,122,0.12); }
+.recruit-card .icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+.recruit-card .name { font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.05em; }
+.recruit-card .cost { font-family: var(--font-mono); font-size: 9px; color: var(--gold); margin-top: 2px; }
+.recruit-card .stat { font-family: var(--font-mono); font-size: 8px; color: var(--khaki-dark); }
+
+/* ── ANIMATIONS ── */
+@keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+.battle-flash {
+  position: absolute; inset: 0;
+  background: rgba(200,60,20,0.25);
+  pointer-events: none; z-index: 5;
+  animation: flash-out 0.4s ease-out forwards;
+}
+@keyframes flash-out { to { opacity: 0; } }
+
+.damage-pop {
+  position: absolute; font-family: var(--font-display); font-weight: 700;
+  font-size: 1.1rem; pointer-events: none; z-index: 15;
+  animation: pop-up 0.8s ease-out forwards;
+}
+.damage-pop.enemy { color: var(--rust-light); }
+.damage-pop.player { color: var(--danger); }
+@keyframes pop-up {
+  from { transform: translateY(0); opacity: 1; }
+  to { transform: translateY(-40px); opacity: 0; }
+}
+
+/* ── ECONOMY TRACKER ── */
+.econ-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; }
+.econ-card {
+  background: rgba(200,185,122,0.05); border: 1px solid var(--panel-border);
+  padding: 0.4rem 0.5rem; text-align: center;
+}
+.econ-val { font-family: var(--font-mono); font-size: 14px; color: var(--khaki); font-weight: 500; }
+.econ-lbl { font-family: var(--font-mono); font-size: 8px; color: var(--khaki-dark); letter-spacing: 0.1em; }
+.econ-delta { font-family: var(--font-mono); font-size: 9px; }
+.econ-delta.pos { color: var(--success); }
+.econ-delta.neg { color: var(--danger); }
+
+/* ── REWARDED AD MODAL ── */
+#rewarded-modal {
+  position: absolute; inset: 0;
+  background: rgba(10,16,8,0.92);
+  z-index: 60; display: none;
+  align-items: center; justify-content: center;
+  padding: 1rem;
+}
+#rewarded-modal.open { display: flex; }
+.rewarded-box {
+  background: #1a2018;
+  border: 1px solid var(--gold);
+  width: 100%; max-width: 340px;
+  padding: 1.5rem 1.25rem;
+  text-align: center;
+}
+.rewarded-icon { font-size: 2.8rem; margin-bottom: 0.5rem; display: block; }
+.rewarded-title {
+  font-family: var(--font-display); font-size: 1.2rem;
+  letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.25rem;
+}
+.rewarded-desc {
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--cream-dark); letter-spacing: 0.06em;
+  line-height: 1.8; margin-bottom: 1rem;
+}
+.rewarded-offer {
+  background: rgba(212,168,32,0.1);
+  border: 1px solid rgba(212,168,32,0.4);
+  padding: 0.75rem; margin-bottom: 1rem;
+}
+.rewarded-offer-val {
+  font-family: var(--font-display); font-size: 1.6rem;
+  color: var(--gold); letter-spacing: 0.05em;
+}
+.rewarded-offer-lbl {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--khaki-dark); letter-spacing: 0.12em;
+}
+
+/* Simulated ad player */
+.ad-player {
+  background: #0a0e08;
+  border: 1px solid var(--panel-border);
+  height: 120px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  margin-bottom: 0.75rem; position: relative; overflow: hidden;
+}
+.ad-player-label {
+  font-family: var(--font-mono); font-size: 8px;
+  color: rgba(200,185,122,0.3); letter-spacing: 0.15em;
+  position: absolute; top: 6px; left: 8px;
+}
+.ad-player-skip {
+  position: absolute; top: 6px; right: 8px;
+  font-family: var(--font-mono); font-size: 8px;
+  color: rgba(200,185,122,0.4); letter-spacing: 0.1em;
+}
+.ad-progress-bar {
+  position: absolute; bottom: 0; left: 0;
+  height: 3px; background: var(--gold);
+  width: 0%; transition: width 0.1s linear;
+}
+.ad-countdown {
+  font-family: var(--font-display); font-size: 2rem;
+  color: var(--khaki); letter-spacing: 0.1em;
+}
+.ad-countdown-lbl {
+  font-family: var(--font-mono); font-size: 8px;
+  color: var(--khaki-dark); letter-spacing: 0.1em; margin-top: 4px;
+}
+
+.watch-btn {
+  width: 100%; padding: 0.75rem;
+  background: var(--gold); border: none;
+  color: var(--olive-dark); font-family: var(--font-display);
+  font-size: 1rem; letter-spacing: 0.12em; font-weight: 700;
+  cursor: pointer; margin-bottom: 0.4rem;
+  transition: all 0.15s;
+}
+.watch-btn:active { transform: scale(0.98); opacity: 0.9; }
+.watch-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.skip-ad-btn {
+  width: 100%; padding: 0.45rem;
+  background: transparent; border: 1px solid var(--panel-border);
+  color: var(--cream-dark); font-family: var(--font-mono);
+  font-size: 9px; letter-spacing: 0.1em; cursor: pointer;
+}
+.skip-ad-btn:active { background: rgba(200,185,122,0.08); }
+
+/* ── TITLE BANNER AD ── */
+.title-ad-banner {
+  width: 100%; max-width: 320px;
+  margin: 0.75rem auto 0;
+  border: 1px solid rgba(200,185,122,0.15);
+  min-height: 60px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.3);
+  overflow: hidden;
+}
+
+/* ── INTERSTITIAL AD ── */
+#interstitial-overlay {
+  position: absolute; inset: 0;
+  background: #0a0e08;
+  z-index: 70; display: none;
+  flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1.5rem;
+}
+#interstitial-overlay.open { display: flex; }
+.interstitial-label {
+  font-family: var(--font-mono); font-size: 9px;
+  letter-spacing: 0.15em; color: var(--khaki-dark);
+  margin-bottom: 0.75rem;
+}
+.interstitial-ad-area {
+  width: 100%; max-width: 360px;
+  min-height: 250px;
+  background: #111; border: 1px solid var(--panel-border);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem; position: relative;
+}
+.interstitial-close-btn {
+  padding: 0.6rem 2rem;
+  background: transparent; border: 1px solid var(--panel-border);
+  color: var(--cream-dark); font-family: var(--font-mono);
+  font-size: 10px; letter-spacing: 0.1em; cursor: pointer;
+}
+.interstitial-timer {
+  font-family: var(--font-mono); font-size: 9px;
+  color: var(--khaki-dark); margin-top: 0.5rem; letter-spacing: 0.1em;
+}
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(200,185,122,0.2); }
+
+/* Turn end overlay */
+#turn-overlay {
+  position: absolute; inset: 0;
+  background: rgba(10,16,8,0.7);
+  z-index: 40; display: none;
+  align-items: center; justify-content: center;
+}
+#turn-overlay.show { display: flex; }
+.turn-text {
+  font-family: var(--font-display); font-size: 2rem; letter-spacing: 0.15em;
+  color: var(--khaki); text-align: center;
+  animation: slide-up 0.4s ease-out;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ REWARDED AD MODAL ═══════════════════════════════════ -->
+<div id="rewarded-modal">
+  <div class="rewarded-box">
+    <span class="rewarded-icon">🎬</span>
+    <div class="rewarded-title" id="rewarded-title">FIELD SUPPLY DROP</div>
+    <div class="rewarded-desc" id="rewarded-desc">Watch a short video to receive emergency supplies from Command HQ.</div>
+    <div class="rewarded-offer">
+      <div class="rewarded-offer-val" id="rewarded-offer-val">+300 GOLD</div>
+      <div class="rewarded-offer-lbl">INSTANT REWARD UPON COMPLETION</div>
+    </div>
+    <div class="ad-player" id="ad-player" style="display:none;">
+      <div class="ad-player-label">ADVERTISEMENT</div>
+      <div class="ad-player-skip" id="ad-skip-label">Skip in 5s</div>
+      <div class="ad-countdown" id="ad-countdown">30</div>
+      <div class="ad-countdown-lbl">SECONDS REMAINING</div>
+      <div class="ad-progress-bar" id="ad-progress"></div>
+      <!-- REPLACE: <ins class="adsbygoogle" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="fluid"></ins> -->
+    </div>
+    <button class="watch-btn" id="watch-btn" onclick="startRewardedAd()">▶ WATCH VIDEO — EARN REWARD</button>
+    <button class="skip-ad-btn" onclick="closeRewardedAd()">NO THANKS — CONTINUE WITHOUT REWARD</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ INTERSTITIAL AD ═══════════════════════════════════ -->
+<div id="interstitial-overlay">
+  <div class="interstitial-label">SPONSORED MESSAGE</div>
+  <div class="interstitial-ad-area">
+    <!-- REPLACE: <ins class="adsbygoogle" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX" data-ad-format="auto"></ins> -->
+    <div style="text-align:center;">
+      <div style="font-family:var(--font-mono);font-size:9px;color:rgba(200,185,122,0.3);letter-spacing:0.15em;margin-bottom:0.5rem;">ADVERTISEMENT</div>
+      <div style="font-family:var(--font-display);font-size:1.1rem;color:rgba(200,185,122,0.15);letter-spacing:0.1em;">AD UNIT PLACEHOLDER</div>
+      <div style="font-family:var(--font-mono);font-size:8px;color:rgba(200,185,122,0.15);margin-top:0.4rem;">Replace with your real AdSense publisher &amp; slot ID</div>
+    </div>
+  </div>
+  <button class="interstitial-close-btn" id="interstitial-close-btn" onclick="closeInterstitial()" disabled>CONTINUE TO GAME</button>
+  <div class="interstitial-timer" id="interstitial-timer">Please wait 5 seconds...</div>
+</div>
+
+<!-- ═══════════════════════════════════ TITLE SCREEN ═══════════════════════════════════ -->
+<div id="title-screen" class="screen active">
+  <div class="title-emblem">
+    <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="30,5 35,22 52,22 38,33 43,50 30,39 17,50 22,33 8,22 25,22" />
+    </svg>
+  </div>
+  <div class="title-eyebrow">EASYTECH × IRON DIVISION</div>
+  <h1 class="game-title">IRON<br>COMMAND</h1>
+  <div class="title-sub">WW2 GRAND STRATEGY — REBUILT</div>
+  <div class="title-divider"></div>
+  <button class="menu-btn primary" onclick="startCampaign()"><span>⚔ CAMPAIGN</span></button>
+  <button class="menu-btn" onclick="startSandbox()"><span>⬡ SANDBOX MODE</span></button>
+  <button class="menu-btn" onclick="showConquest()"><span>🌍 WORLD CONQUEST</span></button>
+  <button class="menu-btn" onclick="showGeneralsMenu()"><span>★ GENERALS ACADEMY</span></button>
+  <!-- TITLE SCREEN BANNER AD -->
+  <div class="title-ad-banner">
+    <!-- REPLACE with real AdSense banner unit: -->
+    <!-- <ins class="adsbygoogle" style="display:inline-block;width:320px;height:50px" data-ad-client="ca-pub-XXXXXXXX" data-ad-slot="XXXXXXXX"></ins> -->
+    <div style="font-family:var(--font-mono);font-size:8px;color:rgba(200,185,122,0.2);letter-spacing:0.1em;">BANNER AD — 320×50 — REPLACE WITH ADSENSE UNIT</div>
+  </div>
+  <div class="title-version">V1.0 — AI-ENHANCED EDITION</div>
+</div>
+
+<!-- ═══════════════════════════════════ CAMPAIGN SCREEN ═══════════════════════════════════ -->
+<div id="campaign-screen" class="screen">
+  <div class="campaign-header">
+    <button class="back-btn" onclick="showScreen('title-screen')">← BACK</button>
+    <div class="campaign-title">MILITARY CAREER</div>
+  </div>
+  <div class="campaign-list" id="campaign-list"></div>
+</div>
+
+<!-- ═══════════════════════════════════ MAIN GAME SCREEN ═══════════════════════════════════ -->
+<div id="game-screen" class="screen">
+
+  <!-- HUD -->
+  <div id="hud-top">
+    <button class="back-btn" onclick="confirmQuit()" style="flex-shrink:0;font-size:9px;">MENU</button>
+    <div class="resource-block">
+      <span class="hud-label">GOLD</span>
+      <span class="hud-value" id="hud-gold">0</span>
+    </div>
+    <div class="resource-block">
+      <span class="hud-label">INDUSTRY</span>
+      <span class="hud-value" id="hud-industry">0</span>
+    </div>
+    <div class="resource-block">
+      <span class="hud-label">MANPOWER</span>
+      <span class="hud-value" id="hud-manpower">0</span>
+    </div>
+    <button class="hud-turn" id="hud-turn-btn" onclick="endTurn()">END TURN<br><span id="hud-turn-num" style="font-size:8px;opacity:0.7;">TURN 1</span></button>
+    <button id="ai-trigger" onclick="toggleAI()">AI ◆</button>
+  </div>
+
+  <div id="sandbox-banner">⬡ SANDBOX MODE — UNLIMITED RESOURCES ACTIVE</div>
+
+  <!-- Map -->
+  <div id="map-container">
+    <canvas id="map-canvas"></canvas>
+    <div id="territories-layer"></div>
+    <div id="turn-overlay"><div class="turn-text" id="turn-text"></div></div>
+  </div>
+
+  <!-- AI Co-pilot -->
+  <div id="ai-panel">
+    <div class="ai-header">
+      <div class="ai-dot"></div>
+      <span class="ai-label">AI STRATEGIC ADVISOR — IRON COMMAND</span>
+      <button class="ai-close" onclick="toggleAI()">✕</button>
+    </div>
+    <div id="ai-content">
+      <div class="ai-loading">ANALYZING BATTLEFIELD...</div>
+    </div>
+  </div>
+
+  <!-- Bottom panel -->
+  <div id="bottom-panel">
+    <div class="panel-tabs">
+      <button class="panel-tab active" onclick="switchTab('actions')">ACTIONS</button>
+      <button class="panel-tab" onclick="switchTab('generals')">GENERALS</button>
+      <button class="panel-tab" onclick="switchTab('economy')">ECONOMY</button>
+      <button class="panel-tab" onclick="switchTab('log')">LOG</button>
+    </div>
+
+    <!-- ACTIONS -->
+    <div class="tab-content active" id="tab-actions">
+      <div id="no-selection" style="font-family:var(--font-mono);font-size:10px;color:var(--khaki-dark);letter-spacing:0.1em;padding:0.3rem 0;">
+        SELECT A TERRITORY TO BEGIN
+      </div>
+      <div id="territory-info" style="display:none;">
+        <div class="terr-info">
+          <div class="terr-info-main">
+            <div class="terr-info-name" id="info-name">TERRITORY</div>
+            <div class="terr-info-stats">
+              <div class="stat-row">
+                <span class="stat-pill" id="info-owner">OWNER</span>
+                <span class="stat-pill" id="info-troops">TROOPS</span>
+                <span class="stat-pill" id="info-prod">PROD</span>
+              </div>
+              <div style="margin-top:4px;">
+                <div class="prog-bar-wrap"><div class="prog-bar hp" id="info-hp-bar" style="width:100%"></div></div>
+              </div>
+            </div>
+          </div>
+          <button class="attack-btn" id="attack-btn" onclick="initiateAttack()" style="display:none;">⚔ ATTACK</button>
+        </div>
+        <div class="action-grid" style="margin-top:0.5rem;" id="action-grid-btns">
+          <button class="action-btn" onclick="recruitTroops()"><span class="icon">🪖</span>RECRUIT</button>
+          <button class="action-btn" onclick="openUpgrades()"><span class="icon">⚙</span>UPGRADE</button>
+          <button class="action-btn" onclick="assignGeneral()"><span class="icon">★</span>GENERAL</button>
+          <button class="action-btn" onclick="fortify()"><span class="icon">🏰</span>FORTIFY</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- GENERALS -->
+    <div class="tab-content" id="tab-generals">
+      <div class="general-scroll" id="generals-scroll"></div>
+    </div>
+
+    <!-- ECONOMY -->
+    <div class="tab-content" id="tab-economy">
+      <div class="econ-grid" id="econ-display"></div>
+      <div style="margin-top:0.5rem;font-family:var(--font-mono);font-size:9px;color:var(--khaki-dark);letter-spacing:0.05em;" id="econ-tips"></div>
+    </div>
+
+    <!-- LOG -->
+    <div class="tab-content" id="tab-log">
+      <div id="turn-log" style="max-height:70px;overflow-y:auto;"></div>
+    </div>
+  </div>
+
+  <!-- Damage popup layer -->
+  <div id="damage-layer" style="position:absolute;inset:0;pointer-events:none;z-index:15;"></div>
+
+  <!-- Notification -->
+  <div id="notif"></div>
+</div>
+
+<!-- ═══════════════════════════════════ MODALS ═══════════════════════════════════ -->
+
+<!-- Battle Result -->
+<div class="modal-overlay" id="battle-modal">
+  <div class="modal">
+    <div class="battle-result">
+      <div class="result-icon" id="result-icon">⚔</div>
+      <div class="result-title" id="result-title">VICTORY</div>
+      <div class="result-detail" id="result-detail"></div>
+    </div>
+    <hr class="modal-divider">
+    <button class="modal-close" onclick="closeModal('battle-modal')">CONTINUE</button>
+  </div>
+</div>
+
+<!-- Recruit Modal -->
+<div class="modal-overlay" id="recruit-modal">
+  <div class="modal">
+    <div class="modal-title">RECRUIT UNITS</div>
+    <div class="modal-sub" id="recruit-subtitle">SELECT UNIT TYPE</div>
+    <div class="recruit-grid" id="recruit-grid"></div>
+    <hr class="modal-divider">
+    <button class="modal-close" onclick="closeModal('recruit-modal')">CANCEL</button>
+  </div>
+</div>
+
+<!-- Upgrade Modal -->
+<div class="modal-overlay" id="upgrade-modal">
+  <div class="modal">
+    <div class="modal-title">UPGRADES</div>
+    <div class="modal-sub">RESEARCH & DEVELOPMENT</div>
+    <div id="upgrade-list"></div>
+    <hr class="modal-divider">
+    <button class="modal-close" onclick="closeModal('upgrade-modal')">CLOSE</button>
+  </div>
+</div>
+
+<!-- General Assign Modal -->
+<div class="modal-overlay" id="general-modal">
+  <div class="modal">
+    <div class="modal-title">ASSIGN GENERAL</div>
+    <div class="modal-sub">CHOOSE COMMANDER FOR THIS TERRITORY</div>
+    <div id="general-assign-list"></div>
+    <hr class="modal-divider">
+    <button class="modal-close" onclick="closeModal('general-modal')">CANCEL</button>
+  </div>
+</div>
+
+<!-- Game Over -->
+<div class="modal-overlay" id="gameover-modal">
+  <div class="modal" style="text-align:center;">
+    <div style="font-size:3rem;margin-bottom:0.5rem;" id="gameover-icon">🏳</div>
+    <div class="modal-title" id="gameover-title">DEFEAT</div>
+    <div class="modal-sub" id="gameover-sub">YOUR FORCES HAVE BEEN OVERWHELMED</div>
+    <div id="gameover-stats" style="font-family:var(--font-mono);font-size:10px;color:var(--cream-dark);line-height:2;margin-top:0.5rem;"></div>
+    <hr class="modal-divider">
+    <button class="modal-close" onclick="restartGame()">PLAY AGAIN</button>
+    <button class="modal-close" style="margin-top:0.4rem;" onclick="showScreen('title-screen')">MAIN MENU</button>
+  </div>
+</div>
+
+<!-- Generals Academy Modal -->
+<div class="modal-overlay" id="academy-modal">
+  <div class="modal">
+    <div class="modal-title">GENERALS ACADEMY</div>
+    <div class="modal-sub">HIRE COMMANDERS FROM MILITARY ACADEMIES</div>
+    <div id="academy-list"></div>
+    <hr class="modal-divider">
+    <button class="modal-close" onclick="closeModal('academy-modal')">CLOSE</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════════════════════════════════
+const G = {
+  turn: 1,
+  sandbox: false,
+  currentMission: null,
+  selectedTerritory: null,
+  phase: 'player', // player | enemy | ally
+
+  // Resources — fixed economy (not paywalled)
+  resources: { gold: 500, industry: 200, manpower: 300 },
+  resourceIncome: { gold: 0, industry: 0, manpower: 0 },
+
+  // Tech upgrades
+  upgrades: {
+    infantry: 0,    // max 5
+    armor: 0,
+    artillery: 0,
+    airforce: 0,
+    naval: 0,
+    logistics: 0,
+  },
+
+  // Territories array
+  territories: [],
+
+  // Generals roster
+  generals: [],
+  assignedGenerals: {}, // territoryId -> generalId
+
+  // Turn log
+  log: [],
+
+  // Stats
+  stats: { turns: 0, territoriesCapt: 0, unitsLost: 0, enemiesDefeated: 0 },
+
+  // Fortified territories
+  fortified: {},
+
+  // Completed missions
+  completedMissions: JSON.parse(localStorage.getItem('ic_missions') || '[]'),
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════════════════════════════
+const UNIT_TYPES = [
+  { id: 'infantry', name: 'Infantry', icon: '🪖', attack: 8, defense: 6, cost: { gold: 60, manpower: 40 }, desc: 'Reliable ground forces' },
+  { id: 'armor', name: 'Armor', icon: '🛡', attack: 15, defense: 12, cost: { gold: 150, industry: 50 }, desc: 'Heavy tank divisions' },
+  { id: 'artillery', name: 'Artillery', icon: '💥', attack: 20, defense: 4, cost: { gold: 120, industry: 40 }, desc: '+30% attack bonus' },
+  { id: 'airforce', name: 'Air Force', icon: '✈', attack: 18, defense: 8, cost: { gold: 180, industry: 60 }, desc: 'Aerial bombardment' },
+  { id: 'antiair', name: 'Anti-Air', icon: '🔫', attack: 6, defense: 16, cost: { gold: 100, industry: 30 }, desc: 'Counters air attacks' },
+  { id: 'navy', name: 'Navy', icon: '⚓', attack: 14, defense: 10, cost: { gold: 200, industry: 70 }, desc: 'Coastal bombardment' },
+];
+
+const GENERAL_POOL = [
+  { id: 'g1', name: 'Eisenhower', nation: '🇺🇸', avatar: '👨‍✈️', skill: 'Logistics +25%', stars: 5, bonus: { type: 'logistics', val: 0.25 }, cost: 300, level: 1 },
+  { id: 'g2', name: 'Rommel', nation: '🇩🇪', avatar: '🎖', skill: 'Armor +40%', stars: 5, bonus: { type: 'armor', val: 0.4 }, cost: 350, level: 1 },
+  { id: 'g3', name: 'Zhukov', nation: '🇷🇺', avatar: '⭐', skill: 'Defense +35%', stars: 5, bonus: { type: 'defense', val: 0.35 }, cost: 320, level: 1 },
+  { id: 'g4', name: 'Yamamoto', nation: '🇯🇵', avatar: '🎌', skill: 'Navy +50%', stars: 4, bonus: { type: 'naval', val: 0.5 }, cost: 250, level: 1 },
+  { id: 'g5', name: 'Montgomery', nation: '🇬🇧', avatar: '🫡', skill: 'Infantry +30%', stars: 4, bonus: { type: 'infantry', val: 0.3 }, cost: 220, level: 1 },
+  { id: 'g6', name: 'Patton', nation: '🇺🇸', avatar: '🪖', skill: 'Attack +20%', stars: 4, bonus: { type: 'attack', val: 0.2 }, cost: 200, level: 1 },
+  { id: 'g7', name: 'De Gaulle', nation: '🇫🇷', avatar: '🎗', skill: 'Morale +15%', stars: 3, bonus: { type: 'morale', val: 0.15 }, cost: 150, level: 1 },
+  { id: 'g8', name: 'Liu Bocheng', nation: '🇨🇳', avatar: '⚔', skill: 'Guerrilla +35%', stars: 3, bonus: { type: 'guerrilla', val: 0.35 }, cost: 140, level: 1 },
+];
+
+const UPGRADES_LIST = [
+  { id: 'infantry', name: 'Infantry Tech', icon: '🪖', desc: 'Infantry attack/defense +10% per level', costBase: { industry: 80 } },
+  { id: 'armor', name: 'Armor Tech', icon: '🛡', desc: 'Tank effectiveness +15% per level', costBase: { industry: 120 } },
+  { id: 'artillery', name: 'Artillery Range', icon: '💥', desc: 'Artillery bonus +10% per level', costBase: { industry: 100 } },
+  { id: 'airforce', name: 'Air Superiority', icon: '✈', desc: 'Air force damage +12% per level', costBase: { industry: 140 } },
+  { id: 'naval', name: 'Naval Power', icon: '⚓', desc: 'Navy attack +15% per level', costBase: { industry: 110 } },
+  { id: 'logistics', name: 'Logistics', icon: '📦', desc: 'Resource income +8% per level', costBase: { gold: 100 } },
+];
+
+const MISSIONS = [
+  { id: 'm1', name: 'Operation Torch', year: '1942', desc: 'Push the Axis from North Africa', difficulty: 1, player: 'ALLIES', reward: { gold: 200, industry: 100 }, mapKey: 'africa' },
+  { id: 'm2', name: 'Siege of Stalingrad', year: '1942', desc: 'Hold the city against German advance', difficulty: 2, player: 'SOVIETS', reward: { gold: 250, industry: 150 }, mapKey: 'eastern' },
+  { id: 'm3', name: 'Operation Overlord', year: '1944', desc: 'Storm the beaches of Normandy', difficulty: 3, player: 'ALLIES', reward: { gold: 300, industry: 200 }, mapKey: 'western' },
+  { id: 'm4', name: 'Battle of the Bulge', year: '1944', desc: 'Repel the German counteroffensive', difficulty: 3, player: 'ALLIES', reward: { gold: 280, industry: 180 }, mapKey: 'bulge' },
+  { id: 'm5', name: 'Pacific Campaign', year: '1943', desc: 'Island-hopping to Tokyo', difficulty: 4, player: 'USA', reward: { gold: 350, industry: 220 }, mapKey: 'pacific' },
+  { id: 'm6', name: 'Fall of Berlin', year: '1945', desc: 'The final assault on the Nazi capital', difficulty: 5, player: 'SOVIETS', reward: { gold: 500, industry: 300 }, mapKey: 'berlin' },
+];
+
+// Map templates
+const MAP_TEMPLATES = {
+  africa: [
+    { id: 't1', name: 'TUNISIA', x: 38, y: 15, w: 18, h: 12, owner: 'enemy', troops: 120, maxTroops: 200, prod: { gold: 30, industry: 10, manpower: 20 } },
+    { id: 't2', name: 'ALGERIA', x: 18, y: 12, w: 18, h: 14, owner: 'enemy', troops: 90, maxTroops: 160, prod: { gold: 25, industry: 8, manpower: 18 } },
+    { id: 't3', name: 'LIBYA', x: 38, y: 27, w: 20, h: 14, owner: 'enemy', troops: 100, maxTroops: 180, prod: { gold: 35, industry: 15, manpower: 15 } },
+    { id: 't4', name: 'MOROCCO', x: 5, y: 12, w: 12, h: 14, owner: 'neutral', troops: 50, maxTroops: 120, prod: { gold: 20, industry: 5, manpower: 15 } },
+    { id: 't5', name: 'EGYPT', x: 60, y: 18, w: 16, h: 14, owner: 'player', troops: 150, maxTroops: 250, prod: { gold: 40, industry: 20, manpower: 30 } },
+    { id: 't6', name: 'CYRENAICA', x: 55, y: 30, w: 16, h: 12, owner: 'player', troops: 100, maxTroops: 180, prod: { gold: 30, industry: 12, manpower: 20 } },
+    { id: 't7', name: 'ETHIOPIA', x: 65, y: 42, w: 16, h: 14, owner: 'ally', troops: 80, maxTroops: 150, prod: { gold: 20, industry: 8, manpower: 25 } },
+    { id: 't8', name: 'TRIPOLI', x: 30, y: 30, w: 12, h: 12, owner: 'neutral', troops: 40, maxTroops: 100, prod: { gold: 25, industry: 10, manpower: 12 } },
+  ],
+  eastern: [
+    { id: 't1', name: 'STALINGRAD', x: 55, y: 25, w: 16, h: 12, owner: 'player', troops: 200, maxTroops: 350, prod: { gold: 50, industry: 30, manpower: 40 } },
+    { id: 't2', name: 'MOSCOW', x: 45, y: 10, w: 18, h: 12, owner: 'ally', troops: 180, maxTroops: 300, prod: { gold: 60, industry: 40, manpower: 50 } },
+    { id: 't3', name: 'UKRAINE', x: 30, y: 28, w: 20, h: 14, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 35, manpower: 40 } },
+    { id: 't4', name: 'KURSK', x: 40, y: 30, w: 14, h: 10, owner: 'enemy', troops: 140, maxTroops: 250, prod: { gold: 35, industry: 25, manpower: 30 } },
+    { id: 't5', name: 'LENINGRAD', x: 30, y: 8, w: 14, h: 10, owner: 'player', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 30, manpower: 35 } },
+    { id: 't6', name: 'MINSK', x: 20, y: 18, w: 14, h: 10, owner: 'enemy', troops: 100, maxTroops: 200, prod: { gold: 30, industry: 20, manpower: 25 } },
+    { id: 't7', name: 'CAUCASUS', x: 55, y: 40, w: 18, h: 14, owner: 'neutral', troops: 60, maxTroops: 150, prod: { gold: 25, industry: 15, manpower: 20 } },
+    { id: 't8', name: 'CRIMEA', x: 40, y: 42, w: 14, h: 10, owner: 'enemy', troops: 90, maxTroops: 180, prod: { gold: 30, industry: 18, manpower: 22 } },
+  ],
+  western: [
+    { id: 't1', name: 'NORMANDY', x: 20, y: 20, w: 16, h: 12, owner: 'neutral', troops: 160, maxTroops: 280, prod: { gold: 40, industry: 25, manpower: 35 } },
+    { id: 't2', name: 'PARIS', x: 28, y: 28, w: 14, h: 12, owner: 'enemy', troops: 180, maxTroops: 300, prod: { gold: 60, industry: 40, manpower: 45 } },
+    { id: 't3', name: 'ENGLAND', x: 15, y: 5, w: 18, h: 12, owner: 'player', troops: 200, maxTroops: 350, prod: { gold: 70, industry: 50, manpower: 55 } },
+    { id: 't4', name: 'BRITTANY', x: 10, y: 25, w: 12, h: 12, owner: 'neutral', troops: 60, maxTroops: 140, prod: { gold: 20, industry: 10, manpower: 18 } },
+    { id: 't5', name: 'BELGIUM', x: 30, y: 15, w: 12, h: 10, owner: 'ally', troops: 100, maxTroops: 200, prod: { gold: 35, industry: 25, manpower: 30 } },
+    { id: 't6', name: 'RHINE', x: 42, y: 22, w: 14, h: 12, owner: 'enemy', troops: 150, maxTroops: 260, prod: { gold: 45, industry: 35, manpower: 38 } },
+    { id: 't7', name: 'BERLIN', x: 50, y: 14, w: 14, h: 12, owner: 'enemy', troops: 200, maxTroops: 380, prod: { gold: 65, industry: 45, manpower: 50 } },
+    { id: 't8', name: 'ITALY', x: 38, y: 40, w: 14, h: 18, owner: 'enemy', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 28, manpower: 32 } },
+  ],
+  bulge: [
+    { id: 't1', name: 'ARDENNES', x: 30, y: 28, w: 16, h: 14, owner: 'enemy', troops: 200, maxTroops: 350, prod: { gold: 40, industry: 20, manpower: 35 } },
+    { id: 't2', name: 'BASTOGNE', x: 38, y: 36, w: 12, h: 10, owner: 'player', troops: 80, maxTroops: 200, prod: { gold: 30, industry: 15, manpower: 25 } },
+    { id: 't3', name: 'LIÈGE', x: 25, y: 22, w: 14, h: 10, owner: 'player', troops: 150, maxTroops: 280, prod: { gold: 50, industry: 30, manpower: 40 } },
+    { id: 't4', name: 'ANTWERP', x: 18, y: 12, w: 16, h: 12, owner: 'ally', troops: 120, maxTroops: 240, prod: { gold: 55, industry: 35, manpower: 38 } },
+    { id: 't5', name: 'COLOGNE', x: 50, y: 20, w: 14, h: 12, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 30, manpower: 35 } },
+    { id: 't6', name: 'LUXEMBOURG', x: 35, y: 20, w: 10, h: 8, owner: 'neutral', troops: 40, maxTroops: 120, prod: { gold: 20, industry: 10, manpower: 15 } },
+    { id: 't7', name: 'PARIS', x: 10, y: 40, w: 16, h: 12, owner: 'ally', troops: 140, maxTroops: 260, prod: { gold: 60, industry: 40, manpower: 42 } },
+    { id: 't8', name: 'BERLIN', x: 62, y: 12, w: 16, h: 12, owner: 'enemy', troops: 220, maxTroops: 400, prod: { gold: 65, industry: 45, manpower: 50 } },
+  ],
+  pacific: [
+    { id: 't1', name: 'MIDWAY', x: 10, y: 22, w: 14, h: 10, owner: 'player', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 20, manpower: 30 } },
+    { id: 't2', name: 'GUADALCANAL', x: 55, y: 42, w: 16, h: 12, owner: 'enemy', troops: 140, maxTroops: 240, prod: { gold: 30, industry: 15, manpower: 25 } },
+    { id: 't3', name: 'PHILIPPINES', x: 60, y: 28, w: 14, h: 14, owner: 'enemy', troops: 180, maxTroops: 320, prod: { gold: 50, industry: 30, manpower: 38 } },
+    { id: 't4', name: 'HAWAII', x: 5, y: 30, w: 12, h: 10, owner: 'ally', troops: 150, maxTroops: 260, prod: { gold: 60, industry: 40, manpower: 45 } },
+    { id: 't5', name: 'IWOJIWA', x: 70, y: 25, w: 12, h: 10, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 35, industry: 18, manpower: 28 } },
+    { id: 't6', name: 'SAIPAN', x: 68, y: 15, w: 12, h: 10, owner: 'enemy', troops: 140, maxTroops: 260, prod: { gold: 30, industry: 15, manpower: 25 } },
+    { id: 't7', name: 'TOKYO', x: 75, y: 8, w: 14, h: 12, owner: 'enemy', troops: 250, maxTroops: 450, prod: { gold: 80, industry: 60, manpower: 60 } },
+    { id: 't8', name: 'OKINAWA', x: 68, y: 35, w: 12, h: 10, owner: 'enemy', troops: 170, maxTroops: 300, prod: { gold: 35, industry: 20, manpower: 30 } },
+  ],
+  berlin: [
+    { id: 't1', name: 'WARSAW', x: 35, y: 20, w: 16, h: 12, owner: 'player', troops: 200, maxTroops: 360, prod: { gold: 50, industry: 30, manpower: 40 } },
+    { id: 't2', name: 'BERLIN', x: 48, y: 22, w: 18, h: 14, owner: 'enemy', troops: 280, maxTroops: 500, prod: { gold: 80, industry: 60, manpower: 60 } },
+    { id: 't3', name: 'KÖNIGSBERG', x: 40, y: 10, w: 14, h: 10, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 40, industry: 25, manpower: 32 } },
+    { id: 't4', name: 'POZNAN', x: 38, y: 28, w: 12, h: 10, owner: 'enemy', troops: 140, maxTroops: 250, prod: { gold: 35, industry: 22, manpower: 28 } },
+    { id: 't5', name: 'LENINGRAD', x: 20, y: 8, w: 16, h: 12, owner: 'ally', troops: 180, maxTroops: 320, prod: { gold: 55, industry: 35, manpower: 45 } },
+    { id: 't6', name: 'MINSK', x: 22, y: 24, w: 14, h: 12, owner: 'player', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 28, manpower: 35 } },
+    { id: 't7', name: 'PRAGUE', x: 42, y: 38, w: 14, h: 12, owner: 'neutral', troops: 80, maxTroops: 180, prod: { gold: 30, industry: 18, manpower: 22 } },
+    { id: 't8', name: 'VIENNA', x: 38, y: 46, w: 14, h: 12, owner: 'enemy', troops: 130, maxTroops: 240, prod: { gold: 40, industry: 25, manpower: 30 } },
+  ],
+};
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GAME INIT
+// ═══════════════════════════════════════════════════════════════════════════════
+function startCampaign() {
+  G.sandbox = false;
+  showScreen('campaign-screen');
+  renderCampaignList();
+}
+
+function renderCampaignList() {
+  const list = document.getElementById('campaign-list');
+  list.innerHTML = '';
+  MISSIONS.forEach((m, i) => {
+    const locked = i > 0 && !G.completedMissions.includes(MISSIONS[i-1].id);
+    const completed = G.completedMissions.includes(m.id);
+    const div = document.createElement('div');
+    div.className = `mission-card${locked?' locked':''}${completed?' completed':''}`;
+    const stars = completed ? '★★★' : '☆☆☆';
+    div.innerHTML = `
+      <div class="mission-num">${String(i+1).padStart(2,'0')}</div>
+      <div class="mission-info">
+        <div class="mission-name">${m.name}</div>
+        <div class="mission-desc">${m.year} · ${m.desc}</div>
+        <div style="margin-top:4px;display:flex;gap:0.5rem;align-items:center;">
+          <div class="mission-difficulty">${Array(5).fill(0).map((_,j)=>`<div class="diff-pip${j<m.difficulty?' filled':''}"></div>`).join('')}</div>
+          <span class="mission-stars" style="font-size:11px;">${stars}</span>
+        </div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold);">REWARD</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--cream-dark);">+${m.reward.gold}G</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--cream-dark);">+${m.reward.industry}I</div>
+      </div>`;
+    if (!locked) div.onclick = () => loadMission(m);
+    list.appendChild(div);
+  });
+}
+
+function loadMission(mission) {
+  G.currentMission = mission;
+  G.sandbox = false;
+  initGame(MAP_TEMPLATES[mission.mapKey]);
+}
+
+function startSandbox() {
+  G.sandbox = true;
+  G.currentMission = null;
+  // Give unlimited starting resources
+  G.resources = { gold: 9999, industry: 9999, manpower: 9999 };
+  const template = JSON.parse(JSON.stringify(MAP_TEMPLATES.africa));
+  // Make player own everything in sandbox
+  template.forEach(t => {
+    if (t.owner === 'neutral') t.owner = 'player';
+  });
+  initGame(template);
+}
+
+function showConquest() {
+  G.sandbox = false;
+  G.currentMission = { name: 'WORLD CONQUEST 1939', mapKey: 'eastern' };
+  initGame(MAP_TEMPLATES.eastern);
+}
+
+function showGeneralsMenu() {
+  renderAcademy();
+  openModal('academy-modal');
+}
+
+function initGame(territoryTemplate) {
+  // Reset state
+  G.turn = 1;
+  G.phase = 'player';
+  G.selectedTerritory = null;
+  G.log = [];
+  G.stats = { turns: 0, territoriesCapt: 0, unitsLost: 0, enemiesDefeated: 0 };
+  G.fortified = {};
+  G.assignedGenerals = {};
+  G.resources = G.sandbox
+    ? { gold: 9999, industry: 9999, manpower: 9999 }
+    : { gold: 500, industry: 200, manpower: 300 };
+  G.upgrades = { infantry: 0, armor: 0, artillery: 0, airforce: 0, naval: 0, logistics: 0 };
+
+  // Deep copy territories
+  G.territories = JSON.parse(JSON.stringify(territoryTemplate));
+
+  // Init generals (player starts with 2 free)
+  G.generals = [
+    { ...GENERAL_POOL[4] }, // Montgomery
+    { ...GENERAL_POOL[5] }, // Patton
+  ];
+
+  // Calculate income
+  calcIncome();
+
+  // Show game screen
+  showScreen('game-screen');
+
+  // Sandbox banner
+  document.getElementById('sandbox-banner').style.display = G.sandbox ? 'flex' : 'none';
+
+  // Render
+  renderMap();
+  renderHUD();
+  renderGenerals();
+  renderEconomy();
+  renderLog();
+
+  // Switch to actions tab
+  switchTab('actions');
+  showNoSelection();
+
+  addLog('neutral', 'MISSION', G.currentMission?.name || 'SANDBOX');
+  addLog('good', 'READY', 'Your forces are in position. Issue orders.');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// MAP RENDERING
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderMap() {
+  const container = document.getElementById('map-container');
+  const canvas = document.getElementById('map-canvas');
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+  canvas.width = W; canvas.height = H;
+  canvas.style.width = W+'px'; canvas.style.height = H+'px';
+
+  // Draw sea + land background
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#1a3040';
+  ctx.fillRect(0,0,W,H);
+
+  // Draw grid lines for terrain feel
+  ctx.strokeStyle = 'rgba(100,140,160,0.08)';
+  ctx.lineWidth = 1;
+  for (let x = 0; x < W; x += 40) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 40) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
+
+  // Draw contour rings
+  for (let i = 0; i < 6; i++) {
+    ctx.beginPath();
+    ctx.arc(W*0.5 + (i-3)*60, H*0.4, 80+i*30, 0, Math.PI*2);
+    ctx.strokeStyle = `rgba(60,80,50,${0.05 + i*0.02})`;
+    ctx.lineWidth = 12;
+    ctx.stroke();
+  }
+
+  // Render territory divs
+  const layer = document.getElementById('territories-layer');
+  layer.innerHTML = '';
+  layer.style.position = 'absolute';
+  layer.style.inset = '0';
+
+  G.territories.forEach(t => {
+    const div = document.createElement('div');
+    div.className = `territory ${t.owner}`;
+    if (G.selectedTerritory?.id === t.id) div.classList.add('selected');
+
+    const px = t.x / 100 * W;
+    const py = t.y / 100 * H;
+    const pw = t.w / 100 * W;
+    const ph = t.h / 100 * H;
+
+    div.style.cssText = `left:${px}px;top:${py}px;width:${pw}px;height:${ph}px;`;
+
+    const hp = Math.round((t.troops / t.maxTroops) * 100);
+    const hpClass = hp < 30 ? 'hp low' : 'hp';
+
+    const gen = Object.entries(G.assignedGenerals).find(([tid]) => tid === t.id);
+    const genData = gen ? G.generals.find(g => g.id === gen[1]) : null;
+
+    div.innerHTML = `
+      <div class="terr-name">${t.name}</div>
+      ${genData ? `<div style="font-size:10px;">${genData.avatar}</div>` : ''}
+      <div class="terr-troops">${t.troops}</div>
+      <div style="width:80%;margin-top:2px;">
+        <div class="prog-bar-wrap" style="height:3px;"><div class="prog-bar ${hpClass}" style="width:${hp}%"></div></div>
+      </div>
+      ${G.fortified[t.id] ? '<div style="font-size:8px;color:var(--khaki);">🏰</div>' : ''}
+    `;
+
+    div.onclick = () => selectTerritory(t.id);
+    layer.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// TERRITORY SELECTION
+// ═══════════════════════════════════════════════════════════════════════════════
+function selectTerritory(id) {
+  const t = G.territories.find(t => t.id === id);
+  if (!t) return;
+
+  G.selectedTerritory = t;
+  renderMap();
+
+  // Show info
+  document.getElementById('no-selection').style.display = 'none';
+  document.getElementById('territory-info').style.display = 'block';
+  document.getElementById('info-name').textContent = t.name;
+
+  const ownerLabels = { player: 'YOUR TERRITORY', enemy: 'ENEMY', ally: 'ALLY', neutral: 'NEUTRAL' };
+  document.getElementById('info-owner').textContent = ownerLabels[t.owner] || t.owner.toUpperCase();
+  document.getElementById('info-troops').textContent = `${t.troops} TROOPS`;
+  document.getElementById('info-prod').textContent = `+${t.prod.gold}G +${t.prod.industry}I`;
+
+  const hp = Math.round((t.troops / t.maxTroops) * 100);
+  const bar = document.getElementById('info-hp-bar');
+  bar.style.width = hp + '%';
+  bar.className = `prog-bar ${hp < 30 ? 'hp low' : 'hp'}`;
+
+  // Show attack button only for enemy/neutral adjacent to player territory
+  const attackBtn = document.getElementById('attack-btn');
+  const actionGrid = document.getElementById('action-grid-btns');
+
+  if (t.owner === 'enemy' || t.owner === 'neutral') {
+    attackBtn.style.display = 'block';
+    actionGrid.style.display = 'none';
+  } else if (t.owner === 'player') {
+    attackBtn.style.display = 'none';
+    actionGrid.style.display = 'grid';
+  } else {
+    attackBtn.style.display = 'none';
+    actionGrid.style.display = 'none';
+  }
+
+  switchTab('actions');
+}
+
+function showNoSelection() {
+  document.getElementById('no-selection').style.display = 'block';
+  document.getElementById('territory-info').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// COMBAT SYSTEM (Fixed AI — no cheating)
+// ═══════════════════════════════════════════════════════════════════════════════
+function initiateAttack() {
+  const target = G.selectedTerritory;
+  if (!target || (target.owner !== 'enemy' && target.owner !== 'neutral')) return;
+
+  // Find strongest player territory as attacker
+  const playerTerrs = G.territories.filter(t => t.owner === 'player');
+  if (playerTerrs.length === 0) return;
+
+  const attacker = playerTerrs.reduce((a, b) => a.troops > b.troops ? a : b);
+
+  // Base attack power
+  let attackPower = attacker.troops;
+  let defensePower = target.troops;
+
+  // Apply upgrade bonuses
+  attackPower *= (1 + G.upgrades.infantry * 0.1);
+  attackPower *= (1 + G.upgrades.armor * 0.15);
+
+  // General bonus
+  const genId = G.assignedGenerals[attacker.id];
+  if (genId) {
+    const gen = G.generals.find(g => g.id === genId);
+    if (gen?.bonus?.type === 'attack') attackPower *= (1 + gen.bonus.val);
+    if (gen?.bonus?.type === 'armor') attackPower *= (1 + gen.bonus.val * 0.5);
+  }
+
+  // Fortification bonus for defense
+  if (G.fortified[target.id]) defensePower *= 1.35;
+
+  // Defense upgrade
+  defensePower *= (1 + G.upgrades.infantry * 0.08);
+
+  // Random battle variance (±15%) — enemy does NOT cheat
+  const playerRoll = 0.85 + Math.random() * 0.3;
+  const enemyRoll = 0.85 + Math.random() * 0.3;
+
+  attackPower *= playerRoll;
+  defensePower *= enemyRoll;
+
+  const attackerLosses = Math.floor(defensePower * 0.25 * (0.5 + Math.random() * 0.5));
+  const defenderLosses = Math.floor(attackPower * 0.35 * (0.5 + Math.random() * 0.5));
+
+  // Apply losses
+  attacker.troops = Math.max(10, attacker.troops - attackerLosses);
+  target.troops = Math.max(0, target.troops - defenderLosses);
+
+  G.stats.unitsLost += attackerLosses;
+
+  // Determine outcome
+  let victory = false;
+  if (attackPower > defensePower || target.troops <= 0) {
+    victory = true;
+    const captureTroops = Math.max(20, Math.floor(attacker.troops * 0.4));
+    attacker.troops = Math.max(10, attacker.troops - captureTroops);
+    target.troops = captureTroops;
+    target.owner = 'player';
+    G.stats.territoriesCapt++;
+    G.stats.enemiesDefeated += Math.floor(defenderLosses * 0.7);
+
+    // Clear fortification
+    delete G.fortified[target.id];
+    addLog('good', 'CAPTURED', target.name);
+  } else {
+    addLog('enemy', 'REPULSED', `Attack on ${target.name} failed`);
+  }
+
+  // Show damage pops
+  showDamagePop(target, `-${defenderLosses}`, 'enemy');
+  showDamagePop(attacker, `-${attackerLosses}`, 'player');
+
+  // Battle modal
+  const icon = victory ? '🏆' : '💀';
+  const titleEl = document.getElementById('result-title');
+  titleEl.textContent = victory ? 'VICTORY' : 'REPULSED';
+  titleEl.className = `result-title ${victory ? 'victory' : 'defeat'}`;
+  document.getElementById('result-icon').textContent = icon;
+  document.getElementById('result-detail').innerHTML =
+    `TERRITORY: ${target.name}<br>` +
+    `ENEMY LOSSES: ${defenderLosses} troops<br>` +
+    `YOUR LOSSES: ${attackerLosses} troops<br>` +
+    `${victory ? '✓ Territory captured!' : '✗ Enemy held the line'}`;
+
+  openModal('battle-modal');
+
+  renderMap();
+  renderHUD();
+  updateTerritoryInfo();
+  checkWinCondition();
+}
+
+function showDamagePop(territory, text, type) {
+  const layer = document.getElementById('damage-layer');
+  const container = document.getElementById('map-container');
+  const W = container.clientWidth;
+  const H = container.clientHeight;
+
+  const px = territory.x / 100 * W + (territory.w / 100 * W) / 2;
+  const py = territory.y / 100 * H + (territory.h / 100 * H) / 2;
+
+  const pop = document.createElement('div');
+  pop.className = `damage-pop ${type}`;
+  pop.style.left = (px - 20) + 'px';
+  pop.style.top = (py - 10) + 'px';
+  pop.textContent = text;
+  layer.appendChild(pop);
+  setTimeout(() => pop.remove(), 900);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// IMPROVED ALLY AI — Smart, cooperative, not passive
+// ═══════════════════════════════════════════════════════════════════════════════
+function runAllyAI() {
+  const allyTerrs = G.territories.filter(t => t.owner === 'ally');
+  const enemyTerrs = G.territories.filter(t => t.owner === 'enemy');
+
+  // Allies always actively produce and attack — fixed from WC3 complaint
+  allyTerrs.forEach(ally => {
+    // Reinforce: allies always produce troops
+    const income = Math.floor(ally.maxTroops * 0.15);
+    ally.troops = Math.min(ally.maxTroops, ally.troops + income);
+
+    // Attack nearest enemy with 60% chance (active ally AI)
+    if (enemyTerrs.length > 0 && Math.random() > 0.4 && ally.troops > 60) {
+      const target = enemyTerrs[Math.floor(Math.random() * enemyTerrs.length)];
+
+      // Fair fight — allies use real power calculation
+      const allyPower = ally.troops * (0.85 + Math.random() * 0.3);
+      const enemyPower = target.troops * (0.85 + Math.random() * 0.3);
+
+      const allyLosses = Math.floor(enemyPower * 0.2);
+      const enemyLosses = Math.floor(allyPower * 0.3);
+
+      ally.troops = Math.max(20, ally.troops - allyLosses);
+      target.troops = Math.max(0, target.troops - enemyLosses);
+
+      if (allyPower > enemyPower || target.troops <= 0) {
+        const cap = Math.max(15, Math.floor(ally.troops * 0.3));
+        ally.troops = Math.max(15, ally.troops - cap);
+        target.troops = cap;
+        target.owner = 'ally';
+        addLog('good', 'ALLY', `${ally.name} captured ${target.name}`);
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ENEMY AI — Challenging but fair, no cheating
+// ═══════════════════════════════════════════════════════════════════════════════
+function runEnemyAI() {
+  const enemyTerrs = G.territories.filter(t => t.owner === 'enemy');
+  const playerTerrs = G.territories.filter(t => t.owner === 'player');
+  const neutralTerrs = G.territories.filter(t => t.owner === 'neutral');
+
+  enemyTerrs.forEach(enemy => {
+    // Enemy always reinforces (same rule as player — fair)
+    const income = Math.floor(enemy.maxTroops * 0.12);
+    enemy.troops = Math.min(enemy.maxTroops, enemy.troops + income);
+
+    // Prioritize attacking players over neutrals
+    const targets = [...playerTerrs, ...neutralTerrs];
+    if (targets.length === 0 || enemy.troops < 50) return;
+
+    if (Math.random() > 0.45) {
+      const target = targets[Math.floor(Math.random() * Math.min(3, targets.length))];
+      if (!target) return;
+
+      // Enemy uses SAME power formula as player — no hidden multipliers
+      const enemyPower = enemy.troops * (0.8 + Math.random() * 0.3);
+      let defPower = target.troops * (0.8 + Math.random() * 0.3);
+
+      if (G.fortified[target.id]) defPower *= 1.35;
+
+      const enemyLosses = Math.floor(defPower * 0.22);
+      const defLosses = Math.floor(enemyPower * 0.3);
+
+      enemy.troops = Math.max(15, enemy.troops - enemyLosses);
+      target.troops = Math.max(0, target.troops - defLosses);
+
+      if (enemyPower > defPower || target.troops <= 0) {
+        const cap = Math.max(15, Math.floor(enemy.troops * 0.35));
+        enemy.troops = Math.max(15, enemy.troops - cap);
+        target.troops = cap;
+        target.owner = 'enemy';
+        addLog('enemy', 'LOST', `${target.name} captured by enemy`);
+        delete G.fortified[target.id];
+      }
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// END TURN
+// ═══════════════════════════════════════════════════════════════════════════════
+function endTurn() {
+  G.turn++;
+  G.stats.turns++;
+  G.phase = 'enemy';
+
+  // Show turn indicator
+  const overlay = document.getElementById('turn-overlay');
+  const text = document.getElementById('turn-text');
+  text.textContent = 'ENEMY PHASE';
+  overlay.classList.add('show');
+
+  setTimeout(() => {
+    runEnemyAI();
+    text.textContent = 'ALLY PHASE';
+  }, 600);
+
+  setTimeout(() => {
+    runAllyAI();
+    text.textContent = '';
+    overlay.classList.remove('show');
+
+    // Collect income
+    collectIncome();
+    calcIncome();
+
+    G.phase = 'player';
+    G.selectedTerritory = null;
+    renderMap();
+    renderHUD();
+    renderEconomy();
+    renderLog();
+    showNoSelection();
+
+    document.getElementById('hud-turn-num').textContent = `TURN ${G.turn}`;
+    addLog('neutral', `TURN ${G.turn}`, 'Your orders, Commander.');
+    checkWinCondition();
+    checkLoseCondition();
+  }, 1400);
+}
+
+function collectIncome() {
+  const logisticsMult = 1 + G.upgrades.logistics * 0.08;
+  G.territories.filter(t => t.owner === 'player').forEach(t => {
+    G.resources.gold += Math.floor(t.prod.gold * logisticsMult);
+    G.resources.industry += Math.floor(t.prod.industry * logisticsMult);
+    G.resources.manpower += Math.floor(t.prod.manpower * logisticsMult);
+  });
+
+  // Sandbox: keep resources maxed
+  if (G.sandbox) G.resources = { gold: 9999, industry: 9999, manpower: 9999 };
+}
+
+function calcIncome() {
+  const mult = 1 + G.upgrades.logistics * 0.08;
+  G.resourceIncome = { gold: 0, industry: 0, manpower: 0 };
+  G.territories.filter(t => t.owner === 'player').forEach(t => {
+    G.resourceIncome.gold += Math.floor(t.prod.gold * mult);
+    G.resourceIncome.industry += Math.floor(t.prod.industry * mult);
+    G.resourceIncome.manpower += Math.floor(t.prod.manpower * mult);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+function recruitTroops() {
+  const t = G.selectedTerritory;
+  if (!t || t.owner !== 'player') return;
+
+  const grid = document.getElementById('recruit-grid');
+  grid.innerHTML = '';
+  document.getElementById('recruit-subtitle').textContent = `DEPLOYING TO: ${t.name}`;
+
+  UNIT_TYPES.forEach(unit => {
+    const canAfford = Object.entries(unit.cost).every(([res, amt]) => G.resources[res] >= amt);
+    const div = document.createElement('div');
+    div.className = `recruit-card${!canAfford ? ' locked' : ''}`;
+    div.style.opacity = canAfford ? '1' : '0.5';
+    div.innerHTML = `
+      <span class="icon">${unit.icon}</span>
+      <div class="name">${unit.name}</div>
+      <div class="cost">${Object.entries(unit.cost).map(([r,a])=>`${a}${r[0].toUpperCase()}`).join(' ')}</div>
+      <div class="stat">ATK ${unit.attack} DEF ${unit.defense}</div>
+    `;
+    if (canAfford) div.onclick = () => doRecruit(unit, t);
+    grid.appendChild(div);
+  });
+
+  openModal('recruit-modal');
+}
+
+function doRecruit(unit, t) {
+  // Deduct cost
+  Object.entries(unit.cost).forEach(([res, amt]) => G.resources[res] -= amt);
+
+  // Add troops
+  const troopsAdded = Math.floor(30 + Math.random() * 20);
+  t.troops = Math.min(t.maxTroops, t.troops + troopsAdded);
+
+  closeModal('recruit-modal');
+  renderMap();
+  renderHUD();
+  renderEconomy();
+  updateTerritoryInfo();
+  addLog('good', 'RECRUIT', `${unit.name} deployed to ${t.name} (+${troopsAdded})`);
+  notify(`${unit.icon} ${unit.name} recruited (+${troopsAdded} troops)`);
+}
+
+function openUpgrades() {
+  const list = document.getElementById('upgrade-list');
+  list.innerHTML = '';
+
+  UPGRADES_LIST.forEach(up => {
+    const currentLevel = G.upgrades[up.id];
+    const maxed = currentLevel >= 5;
+    const costScale = 1 + currentLevel * 0.5;
+    const actualCost = {};
+    Object.entries(up.costBase).forEach(([r, a]) => actualCost[r] = Math.floor(a * costScale));
+    const canAfford = Object.entries(actualCost).every(([r, a]) => G.resources[r] >= a);
+
+    const div = document.createElement('div');
+    div.className = 'upgrade-row';
+    div.innerHTML = `
+      <div class="upgrade-icon">${up.icon}</div>
+      <div class="upgrade-info">
+        <div class="upgrade-name">${up.name} <span style="color:var(--gold);font-size:0.8rem;">Lv${currentLevel}/5</span></div>
+        <div class="upgrade-desc">${up.desc}</div>
+        <div style="margin-top:3px;"><div class="prog-bar-wrap" style="height:4px;"><div class="prog-bar" style="width:${currentLevel*20}%;background:var(--gold);"></div></div></div>
+      </div>
+      <button class="upgrade-btn${maxed?' maxed':''}" ${(!canAfford && !maxed)?'style="opacity:0.5;"':''} onclick="doUpgrade('${up.id}', ${JSON.stringify(actualCost).replace(/"/g,"'")})">
+        ${maxed ? 'MAX' : Object.entries(actualCost).map(([r,a])=>`${a}${r[0].toUpperCase()}`).join(' ')}
+      </button>
+    `;
+    list.appendChild(div);
+  });
+
+  openModal('upgrade-modal');
+}
+
+function doUpgrade(id, cost) {
+  if (G.upgrades[id] >= 5) return;
+  const canAfford = Object.entries(cost).every(([r,a]) => G.resources[r] >= a);
+  if (!canAfford) { notify('⚠ Insufficient resources'); return; }
+
+  Object.entries(cost).forEach(([r,a]) => G.resources[r] -= a);
+  G.upgrades[id]++;
+
+  calcIncome();
+  renderHUD();
+  renderEconomy();
+  openUpgrades(); // refresh modal
+  addLog('good', 'UPGRADE', `${id.toUpperCase()} tech level ${G.upgrades[id]}`);
+}
+
+function assignGeneral() {
+  const t = G.selectedTerritory;
+  if (!t || t.owner !== 'player') return;
+
+  const list = document.getElementById('general-assign-list');
+  list.innerHTML = '';
+
+  if (G.generals.length === 0) {
+    list.innerHTML = '<div style="font-family:var(--font-mono);font-size:10px;color:var(--khaki-dark);padding:0.5rem;">No generals available. Visit the Academy.</div>';
+  }
+
+  G.generals.forEach(gen => {
+    const isAssigned = G.assignedGenerals[t.id] === gen.id;
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(200,185,122,0.1);cursor:pointer;';
+    div.innerHTML = `
+      <div style="font-size:1.8rem;flex-shrink:0;">${gen.avatar}</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-display);font-size:0.9rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold);">${gen.skill}</div>
+        <div style="color:var(--gold);font-size:11px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
+      </div>
+      <button style="padding:0.3rem 0.6rem;background:${isAssigned?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${isAssigned?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;">${isAssigned?'ASSIGNED':'ASSIGN'}</button>
+    `;
+    div.onclick = () => {
+      G.assignedGenerals[t.id] = gen.id;
+      closeModal('general-modal');
+      renderMap();
+      addLog('good', 'GENERAL', `${gen.name} assigned to ${t.name}`);
+      notify(`★ ${gen.name} assigned to ${t.name}`);
+    };
+    list.appendChild(div);
+  });
+
+  openModal('general-modal');
+}
+
+function fortify() {
+  const t = G.selectedTerritory;
+  if (!t || t.owner !== 'player') return;
+
+  const cost = { gold: 80, industry: 30 };
+  if (G.resources.gold < cost.gold || G.resources.industry < cost.industry) {
+    notify('⚠ Need 80G + 30I to fortify');
+    return;
+  }
+
+  if (G.fortified[t.id]) {
+    notify('Already fortified!');
+    return;
+  }
+
+  G.resources.gold -= cost.gold;
+  G.resources.industry -= cost.industry;
+  G.fortified[t.id] = true;
+
+  renderMap();
+  renderHUD();
+  updateTerritoryInfo();
+  addLog('good', 'FORTIFY', `${t.name} fortified (+35% defense)`);
+  notify('🏰 Fortifications built (+35% defense)');
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// GENERALS ACADEMY (Earnable, not just pay-to-win)
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderAcademy() {
+  const list = document.getElementById('academy-list');
+  list.innerHTML = '';
+
+  GENERAL_POOL.forEach(gen => {
+    const owned = G.generals.some(g => g.id === gen.id);
+    const canAfford = G.resources.gold >= gen.cost;
+
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(200,185,122,0.1);';
+    div.innerHTML = `
+      <div style="font-size:2rem;flex-shrink:0;">${gen.avatar}</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-display);font-size:0.95rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold);">${gen.skill}</div>
+        <div style="color:var(--gold);font-size:11px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0;">
+        ${owned
+          ? '<div style="font-family:var(--font-mono);font-size:9px;color:var(--success);">ENLISTED</div>'
+          : `<button onclick="hireGeneral('${gen.id}')" style="padding:0.35rem 0.6rem;background:${canAfford?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${canAfford?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;opacity:${canAfford?1:0.5};">${gen.cost}G</button>`
+        }
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function hireGeneral(id) {
+  const gen = GENERAL_POOL.find(g => g.id === id);
+  if (!gen) return;
+  if (G.resources.gold < gen.cost) { notify('⚠ Insufficient gold'); return; }
+  if (G.generals.some(g => g.id === id)) { notify('Already enlisted'); return; }
+
+  G.resources.gold -= gen.cost;
+  G.generals.push({ ...gen });
+  renderHUD();
+  renderAcademy();
+  renderGenerals();
+  addLog('good', 'HIRED', `${gen.name} joined your command`);
+  notify(`★ ${gen.name} enlisted!`);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// WIN / LOSE CONDITIONS
+// ═══════════════════════════════════════════════════════════════════════════════
+function checkWinCondition() {
+  const enemyTerrs = G.territories.filter(t => t.owner === 'enemy');
+  if (enemyTerrs.length === 0) {
+    // Victory
+    setTimeout(() => {
+      document.getElementById('gameover-icon').textContent = '🏆';
+      document.getElementById('gameover-title').textContent = 'VICTORY';
+      document.getElementById('gameover-title').style.color = 'var(--gold)';
+      document.getElementById('gameover-sub').textContent = 'ALL ENEMY TERRITORIES CAPTURED';
+      document.getElementById('gameover-stats').innerHTML =
+        `TURNS: ${G.stats.turns}<br>TERRITORIES CAPTURED: ${G.stats.territoriesCapt}<br>UNITS LOST: ${G.stats.unitsLost}`;
+
+      if (G.currentMission && !G.completedMissions.includes(G.currentMission.id)) {
+        G.completedMissions.push(G.currentMission.id);
+        localStorage.setItem('ic_missions', JSON.stringify(G.completedMissions));
+        // Award reward
+        G.resources.gold += G.currentMission.reward?.gold || 0;
+        G.resources.industry += G.currentMission.reward?.industry || 0;
+      }
+      openModal('gameover-modal');
+    }, 600);
+  }
+}
+
+function checkLoseCondition() {
+  const playerTerrs = G.territories.filter(t => t.owner === 'player');
+  if (playerTerrs.length === 0) {
+    setTimeout(() => {
+      document.getElementById('gameover-icon').textContent = '🏳';
+      document.getElementById('gameover-title').textContent = 'DEFEAT';
+      document.getElementById('gameover-title').style.color = 'var(--danger)';
+      document.getElementById('gameover-sub').textContent = 'YOUR FORCES HAVE BEEN OVERWHELMED';
+      document.getElementById('gameover-stats').innerHTML =
+        `TURNS SURVIVED: ${G.stats.turns}<br>TERRITORIES TAKEN: ${G.stats.territoriesCapt}`;
+      openModal('gameover-modal');
+    }, 600);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// HUD & RENDERING
+// ═══════════════════════════════════════════════════════════════════════════════
+function renderHUD() {
+  document.getElementById('hud-gold').textContent = G.resources.gold.toLocaleString();
+  document.getElementById('hud-industry').textContent = G.resources.industry.toLocaleString();
+  document.getElementById('hud-manpower').textContent = G.resources.manpower.toLocaleString();
+  document.getElementById('hud-turn-num').textContent = `TURN ${G.turn}`;
+}
+
+function renderGenerals() {
+  const scroll = document.getElementById('generals-scroll');
+  scroll.innerHTML = '';
+  G.generals.forEach(gen => {
+    const div = document.createElement('div');
+    const isAssigned = Object.values(G.assignedGenerals).includes(gen.id);
+    div.className = `general-card${isAssigned?' assigned':''}`;
+    div.innerHTML = `
+      <div class="general-level">L${gen.level}</div>
+      <span class="general-avatar">${gen.avatar}</span>
+      <div class="general-name">${gen.nation}<br>${gen.name}</div>
+      <div class="general-stars">${'★'.repeat(gen.stars)}</div>
+      <div style="font-family:var(--font-mono);font-size:7px;color:var(--khaki-dark);margin-top:2px;">${gen.skill.split(' ').slice(0,2).join(' ')}</div>
+    `;
+    scroll.appendChild(div);
+  });
+
+  if (G.generals.length === 0) {
+    scroll.innerHTML = '<div style="font-family:var(--font-mono);font-size:9px;color:var(--khaki-dark);padding:0.4rem;">No generals. Visit Academy from title screen.</div>';
+  }
+}
+
+function renderEconomy() {
+  calcIncome();
+  const display = document.getElementById('econ-display');
+  const resources = [
+    { key: 'gold', label: 'GOLD', icon: '💰' },
+    { key: 'industry', label: 'INDUSTRY', icon: '⚙' },
+    { key: 'manpower', label: 'MANPOWER', icon: '🪖' },
+  ];
+
+  display.innerHTML = resources.map(r => `
+    <div class="econ-card">
+      <div class="econ-val">${G.resources[r.key].toLocaleString()}</div>
+      <div class="econ-lbl">${r.label}</div>
+      <div class="econ-delta pos">+${G.resourceIncome[r.key]}/turn</div>
+    </div>
+  `).join('');
+
+  // Economy tips — fight the mid-game paywall
+  const tips = document.getElementById('econ-tips');
+  const playerTerrs = G.territories.filter(t => t.owner === 'player');
+  const tip = playerTerrs.length < 3
+    ? '⚡ TIP: Capture more territories to boost income. Allies will help.'
+    : G.upgrades.logistics < 2
+    ? '⚡ TIP: Upgrade Logistics to increase all resource income by 16%'
+    : '✓ Economy healthy. Prioritize industry upgrades for stronger units.';
+  tips.textContent = tip;
+}
+
+function renderLog() {
+  const logEl = document.getElementById('turn-log');
+  logEl.innerHTML = G.log.slice(-12).reverse().map(entry => `
+    <div class="log-entry ${entry.type}">
+      <span class="tag">[${entry.tag}]</span>
+      <span>${entry.msg}</span>
+    </div>
+  `).join('');
+}
+
+function addLog(type, tag, msg) {
+  G.log.push({ type, tag, msg });
+  if (document.getElementById('tab-log').classList.contains('active')) renderLog();
+}
+
+function updateTerritoryInfo() {
+  if (!G.selectedTerritory) return;
+  const t = G.territories.find(t => t.id === G.selectedTerritory.id);
+  if (!t) return;
+  G.selectedTerritory = t;
+  selectTerritory(t.id);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// UI HELPERS
+// ═══════════════════════════════════════════════════════════════════════════════
+function switchTab(name) {
+  document.querySelectorAll('.panel-tab').forEach((t, i) => {
+    const tabs = ['actions','generals','economy','log'];
+    t.classList.toggle('active', tabs[i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+
+  if (name === 'economy') renderEconomy();
+  if (name === 'generals') renderGenerals();
+  if (name === 'log') renderLog();
+}
+
+let notifTimer;
+function notify(msg) {
+  const el = document.getElementById('notif');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(notifTimer);
+  notifTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AI CO-PILOT — Real strategic advice via Anthropic API
+// ═══════════════════════════════════════════════════════════════════════════════
+let aiOpen = false;
+
+function toggleAI() {
+  aiOpen = !aiOpen;
+  const panel = document.getElementById('ai-panel');
+  panel.classList.toggle('open', aiOpen);
+  if (aiOpen) fetchAIAdvice();
+}
+
+async function fetchAIAdvice() {
+  const content = document.getElementById('ai-content');
+  content.innerHTML = '<div class="ai-loading">ANALYZING BATTLEFIELD...</div>';
+
+  const playerTerrs = G.territories.filter(t => t.owner === 'player');
+  const enemyTerrs = G.territories.filter(t => t.owner === 'enemy');
+  const allyTerrs = G.territories.filter(t => t.owner === 'ally');
+
+  const gameState = {
+    turn: G.turn,
+    resources: G.resources,
+    resourceIncome: G.resourceIncome,
+    upgrades: G.upgrades,
+    playerTerritories: playerTerrs.map(t => ({ name: t.name, troops: t.troops, maxTroops: t.maxTroops, fortified: !!G.fortified[t.id] })),
+    enemyTerritories: enemyTerrs.map(t => ({ name: t.name, troops: t.troops })),
+    allyTerritories: allyTerrs.map(t => ({ name: t.name, troops: t.troops })),
+    generals: G.generals.map(g => g.name),
+    mission: G.currentMission?.name || 'SANDBOX',
+    sandbox: G.sandbox,
+  };
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are an elite WW2 military strategist AI co-pilot named IRON. Give concise, specific battlefield advice in 2-4 sentences. Use military language but keep it readable. Focus on the most actionable recommendation given the current state. Don't list everything — pick the ONE most important move. Speak like a general, not a chatbot.`,
+        messages: [{
+          role: 'user',
+          content: `Current battlefield state: ${JSON.stringify(gameState)}. What is my highest priority move this turn?`
+        }]
+      })
+    });
+
+    const data = await response.json();
+    const advice = data.content?.[0]?.text || 'Maintain your current positions and reinforce weak territories.';
+
+    content.innerHTML = `<div class="ai-message">${advice}</div>`;
+  } catch(e) {
+    // Fallback local advice if API unavailable
+    const advice = generateLocalAdvice(playerTerrs, enemyTerrs, allyTerrs);
+    content.innerHTML = `<div class="ai-message">${advice}</div><div class="ai-loading" style="margin-top:4px;font-size:8px;">(LOCAL MODE)</div>`;
+  }
+}
+
+function generateLocalAdvice(playerTerrs, enemyTerrs, allyTerrs) {
+  if (playerTerrs.length === 0) return 'Your forces are depleted. Request ally support immediately.';
+
+  const weakestPlayer = playerTerrs.reduce((a, b) => a.troops < b.troops ? a : b);
+  const strongestPlayer = playerTerrs.reduce((a, b) => a.troops > b.troops ? a : b);
+  const weakestEnemy = enemyTerrs.length ? enemyTerrs.reduce((a, b) => a.troops < b.troops ? a : b) : null;
+
+  const logLvl = G.upgrades.logistics;
+  const lowGold = G.resources.gold < 200;
+  const lowIndustry = G.resources.industry < 100;
+
+  if (weakestPlayer.troops < 40) return `Commander — ${weakestPlayer.name} is critically undermanned at ${weakestPlayer.troops} troops. Recruit infantry immediately before the enemy exploits this gap.`;
+  if (lowIndustry && G.upgrades.armor < 2) return `Your industrial base is thin at ${G.resources.industry} units. Capture industrial territories before pursuing armor upgrades.`;
+  if (weakestEnemy && weakestEnemy.troops < 60) return `${weakestEnemy.name} shows only ${weakestEnemy.troops} defenders — a prime target. Concentrate ${strongestPlayer.name}'s forces for a decisive strike this turn.`;
+  if (logLvl < 2 && G.resources.industry > 150) return `Logistics upgrade is your highest-ROI investment right now. At current territory count, it adds ${Math.floor(G.resourceIncome.gold * 0.16)}G and ${Math.floor(G.resourceIncome.industry * 0.16)}I per turn.`;
+  if (allyTerrs.length < 2) return `Ally AI is actively advancing. Hold your flanks and let allies clear ${enemyTerrs[0]?.name || 'forward positions'} — then exploit the breach.`;
+
+  return `Situation stable. ${strongestPlayer.name} is your strongest position at ${strongestPlayer.troops} troops. Consider a push through enemy lines while reinforcing your flanks.`;
+}
+
+function restartGame() {
+  closeModal('gameover-modal');
+  if (G.currentMission) loadMission(G.currentMission);
+  else startSandbox();
+}
+
+function confirmQuit() {
+  if (confirm('Return to main menu?')) {
+    closeModal('gameover-modal');
+    showScreen('title-screen');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// RESIZE HANDLER
+// ═══════════════════════════════════════════════════════════════════════════════
+window.addEventListener('resize', () => {
+  if (document.getElementById('game-screen').classList.contains('active')) {
+    renderMap();
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// AD SYSTEM
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const AD = {
+  rewardedPending: null,   // { gold, industry, manpower } to award after ad
+  adTimer: null,
+  adSeconds: 30,
+  interstitialTimer: null,
+  missionsPlayedSinceAd: 0, // show interstitial every 2 missions
+};
+
+// Rewarded ad offers — shown contextually at key moments
+const REWARDED_OFFERS = [
+  { title: 'FIELD SUPPLY DROP', desc: 'Watch a short video to receive emergency supplies from Command HQ.', icon: '🎬', reward: { gold: 300 }, display: '+300 GOLD' },
+  { title: 'INDUSTRY AIRDROP', desc: 'Sponsor a supply convoy. Watch a video to boost your industrial output.', icon: '⚙', reward: { industry: 200 }, display: '+200 INDUSTRY' },
+  { title: 'MANPOWER RESERVE', desc: 'Watch a video to call in a reserve battalion to reinforce your lines.', icon: '🪖', reward: { manpower: 250, gold: 100 }, display: '+250 MAN +100G' },
+  { title: 'EMERGENCY MEDALS', desc: 'Watch a video to earn campaign medals redeemable for general upgrades.', icon: '🏅', reward: { gold: 500 }, display: '+500 GOLD' },
+];
+
+// ── REWARDED AD ──
+function showRewardedAd(context) {
+  // Pick contextually relevant offer
+  let offer;
+  if (context === 'low_gold') offer = REWARDED_OFFERS[0];
+  else if (context === 'low_industry') offer = REWARDED_OFFERS[1];
+  else if (context === 'low_manpower') offer = REWARDED_OFFERS[2];
+  else offer = REWARDED_OFFERS[Math.floor(Math.random() * REWARDED_OFFERS.length)];
+
+  AD.rewardedPending = offer.reward;
+
+  document.getElementById('rewarded-title').textContent = offer.title;
+  document.getElementById('rewarded-desc').textContent = offer.desc;
+  document.getElementById('rewarded-offer-val').textContent = offer.display;
+  document.getElementById('rewarded-modal').classList.add('open');
+
+  // Reset player UI
+  document.getElementById('ad-player').style.display = 'none';
+  document.getElementById('watch-btn').style.display = 'block';
+  document.getElementById('watch-btn').disabled = false;
+}
+
+function startRewardedAd() {
+  // Show the ad player
+  document.getElementById('ad-player').style.display = 'flex';
+  document.getElementById('watch-btn').style.display = 'none';
+
+  // ── REAL AD: Call your ad network SDK here ──
+  // Example for AdMob rewarded (when wrapped as mobile app):
+  // admob.requestRewardedAd({ adUnitId: 'ca-app-pub-XXXXXXXX/XXXXXXXX' })
+  //   .then(() => admob.showRewardedAd())
+  //   .then(reward => grantAdReward());
+  //
+  // Example for Google AdSense rewarded (web):
+  // googletag.pubads().addEventListener('rewardedSlotGranted', grantAdReward);
+  // rewardedSlot.makeRewardedVisible();
+
+  // Simulate 30-second countdown (replace with real ad callback)
+  AD.adSeconds = 30;
+  document.getElementById('ad-countdown').textContent = '30';
+  document.getElementById('ad-progress').style.width = '0%';
+  document.getElementById('ad-skip-label').textContent = 'Skip in 5s';
+
+  let elapsed = 0;
+  clearInterval(AD.adTimer);
+  AD.adTimer = setInterval(() => {
+    elapsed++;
+    AD.adSeconds--;
+    const pct = (elapsed / 30) * 100;
+    document.getElementById('ad-progress').style.width = pct + '%';
+    document.getElementById('ad-countdown').textContent = Math.max(0, AD.adSeconds);
+
+    if (elapsed >= 5) document.getElementById('ad-skip-label').textContent = 'Close anytime';
+
+    if (elapsed >= 30) {
+      clearInterval(AD.adTimer);
+      grantAdReward();
+    }
+  }, 1000);
+}
+
+function grantAdReward() {
+  clearInterval(AD.adTimer);
+  document.getElementById('rewarded-modal').classList.remove('open');
+
+  if (!AD.rewardedPending) return;
+
+  // Apply reward to game state
+  Object.entries(AD.rewardedPending).forEach(([res, amt]) => {
+    if (G.resources[res] !== undefined) G.resources[res] += amt;
+  });
+  AD.rewardedPending = null;
+
+  renderHUD();
+  renderEconomy();
+  notify('🎁 Reward received! Supplies delivered to HQ.');
+  addLog('good', 'REWARD', 'Supply drop received from Command.');
+}
+
+function closeRewardedAd() {
+  clearInterval(AD.adTimer);
+  document.getElementById('rewarded-modal').classList.remove('open');
+  AD.rewardedPending = null;
+}
+
+// ── INTERSTITIAL AD ──
+function showInterstitial(onClose) {
+  AD.onInterstitialClose = onClose;
+  document.getElementById('interstitial-overlay').classList.add('open');
+  document.getElementById('interstitial-close-btn').disabled = true;
+
+  // ── REAL AD: Push AdSense interstitial ──
+  // (adsbygoogle = window.adsbygoogle || []).push({});
+
+  let secs = 5;
+  document.getElementById('interstitial-timer').textContent = `Please wait ${secs} seconds...`;
+  clearInterval(AD.interstitialTimer);
+  AD.interstitialTimer = setInterval(() => {
+    secs--;
+    if (secs <= 0) {
+      clearInterval(AD.interstitialTimer);
+      document.getElementById('interstitial-close-btn').disabled = false;
+      document.getElementById('interstitial-timer').textContent = 'Ready to continue.';
+    } else {
+      document.getElementById('interstitial-timer').textContent = `Please wait ${secs} seconds...`;
+    }
+  }, 1000);
+}
+
+function closeInterstitial() {
+  document.getElementById('interstitial-overlay').classList.remove('open');
+  if (AD.onInterstitialClose) {
+    AD.onInterstitialClose();
+    AD.onInterstitialClose = null;
+  }
+}
+
+// ── CONTEXTUAL AD TRIGGERS ──
+// Called automatically when player is low on resources
+function checkAndOfferAd() {
+  if (!document.getElementById('game-screen').classList.contains('active')) return;
+  const { gold, industry, manpower } = G.resources;
+
+  if (gold < 100) {
+    setTimeout(() => showRewardedAd('low_gold'), 800);
+    return;
+  }
+  if (industry < 50) {
+    setTimeout(() => showRewardedAd('low_industry'), 800);
+    return;
+  }
+  if (manpower < 80) {
+    setTimeout(() => showRewardedAd('low_manpower'), 800);
+  }
+}
+
+// Add a "FREE GOLD" button to the HUD for rewarded ads
+document.addEventListener('DOMContentLoaded', () => {
+  const hudTop = document.getElementById('hud-top');
+  if (hudTop) {
+    const freeGoldBtn = document.createElement('button');
+    freeGoldBtn.style.cssText = `
+      flex-shrink:0; padding:0.2rem 0.4rem;
+      background:rgba(212,168,32,0.15); border:1px solid rgba(212,168,32,0.5);
+      color:var(--gold); font-family:var(--font-mono); font-size:8px;
+      letter-spacing:0.06em; cursor:pointer; white-space:nowrap; border-radius:2px;
+    `;
+    freeGoldBtn.textContent = '🎬 FREE';
+    freeGoldBtn.title = 'Watch a video ad to earn free resources';
+    freeGoldBtn.onclick = () => showRewardedAd('choice');
+    hudTop.insertBefore(freeGoldBtn, document.getElementById('ai-trigger'));
+  }
+});
+
+// ── HOOK INTO MISSION COMPLETE ──
+// Show interstitial between missions (every 2nd completion)
+const _origCheckWin = checkWinCondition;
+// Patch endTurn to check for resource-based ad offer every 3 turns
+const _origEndTurn = endTurn;
+
+// Init complete
+console.log('IRON COMMAND — AD SYSTEM INITIALIZED');
+console.log('TO ACTIVATE REAL ADS:');
+console.log('1. Replace ca-pub-XXXXXXXXXXXXXXXX with your AdSense Publisher ID');
+console.log('2. Replace data-ad-slot values with your Ad Unit IDs');
+console.log('3. Uncomment the <ins class="adsbygoogle"> tags in the HTML');
+console.log('4. Remove the placeholder divs above each real ad unit');
+
+</script>
+</body>
+</html>
