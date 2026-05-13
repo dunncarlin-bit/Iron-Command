@@ -12,6 +12,7 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 <style>
 :root {
+  --touch-target: 48px;
   --khaki: #c8b97a;
   --khaki-dark: #8a7d45;
   --khaki-light: #e8d9a0;
@@ -66,7 +67,7 @@ body {
 #player-name-input {
   width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.4);
   border: 1px solid var(--panel-border); color: var(--khaki);
-  font-family: var(--font-mono); font-size: 1.2rem; text-align: center;
+  font-family: var(--font-mono); font-size: 1.4rem; text-align: center;
   margin-bottom: 1rem; outline: none;
 }
 #player-name-input:focus { border-color: var(--khaki); box-shadow: 0 0 10px rgba(200,185,122,0.2); }
@@ -123,7 +124,7 @@ h1.game-title {
 
 .title-sub {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   color: var(--khaki-dark);
   margin-bottom: 2.5rem;
@@ -169,7 +170,7 @@ h1.game-title {
 
 .title-version {
   position: absolute; bottom: 1rem;
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: rgba(200,185,122,0.3); letter-spacing: 0.15em;
 }
 
@@ -177,18 +178,18 @@ h1.game-title {
 #hud-top {
   background: var(--panel-bg);
   border-bottom: 1px solid var(--panel-border);
-  padding: 0.5rem 0.75rem;
+  padding: 0.8rem 1rem;
   display: flex; align-items: center; gap: 0.75rem;
   flex-shrink: 0; z-index: 10;
 }
 
 .hud-label {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   letter-spacing: 0.15em; color: var(--khaki-dark);
   display: block; margin-bottom: 1px;
 }
 .hud-value {
-  font-family: var(--font-mono); font-size: 13px;
+  font-family: var(--font-mono); font-size: 14px;
   color: var(--khaki); font-weight: 500;
 }
 
@@ -197,7 +198,7 @@ h1.game-title {
 .hud-turn {
   background: var(--khaki);
   color: var(--olive-dark);
-  padding: 0.3rem 0.6rem;
+  padding: 0.5rem 0.8rem;
   font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
@@ -249,6 +250,7 @@ h1.game-title {
   position: absolute;
   cursor: pointer;
   image-rendering: pixelated;
+  touch-action: none;
 }
 
 /* Territory overlays */
@@ -274,17 +276,17 @@ h1.game-title {
   to { filter: brightness(1.4); }
 }
 
-.terr-name { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-align: center; line-height: 1.2; }
-.terr-troops { font-family: var(--font-display); font-size: 11px; font-weight: 700; color: #fff; }
+.terr-name { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-align: center; line-height: 1.2; }
+.terr-troops { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: #fff; }
 .terr-flag { font-size: 14px; line-height: 1; }
 
 /* ── BOTTOM PANEL ── */
 #bottom-panel {
   background: var(--panel-bg);
   border-top: 1px solid var(--panel-border);
-  padding: 0.5rem 0.75rem 0.6rem;
+  padding: 0.8rem 1rem 1rem;
   flex-shrink: 0; z-index: 10;
-  min-height: 130px;
+  min-height: 160px;
 }
 
 .panel-tabs {
@@ -294,7 +296,7 @@ h1.game-title {
   flex: 1; padding: 0.3rem; background: transparent;
   border: 1px solid var(--panel-border);
   color: var(--cream-dark); font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.1em; cursor: pointer;
+  font-size: 12px; letter-spacing: 0.1em; cursor: pointer;
   transition: all 0.15s;
 }
 .panel-tab.active {
@@ -307,14 +309,14 @@ h1.game-title {
 
 /* Action buttons */
 .action-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem;
 }
 .action-btn {
-  padding: 0.5rem 0.2rem;
+  padding: 0.7rem 0.4rem;
   background: rgba(200,185,122,0.08);
   border: 1px solid var(--panel-border);
   color: var(--cream); font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.05em; cursor: pointer;
+  font-size: 12px; letter-spacing: 0.05em; cursor: pointer;
   text-align: center; transition: all 0.15s;
   display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
@@ -330,7 +332,7 @@ h1.game-title {
 }
 .terr-info-main { flex: 1; }
 .terr-info-name {
-  font-family: var(--font-display); font-size: 1.1rem;
+  font-family: var(--font-display); font-size: 1.5rem;
   color: var(--khaki); letter-spacing: 0.05em;
   margin-bottom: 2px;
 }
@@ -341,7 +343,7 @@ h1.game-title {
 .stat-row { display: flex; gap: 0.5rem; }
 .stat-pill {
   background: rgba(200,185,122,0.1); border: 1px solid var(--panel-border);
-  padding: 1px 6px; font-family: var(--font-mono); font-size: 9px;
+  padding: 1px 6px; font-family: var(--font-mono); font-size: 12px;
   color: var(--khaki-dark);
 }
 .attack-btn {
@@ -363,7 +365,7 @@ h1.game-title {
 .operator-scroll::-webkit-scrollbar { display: none; }
 
 .operator-card {
-  flex-shrink: 0; width: 80px;
+  flex-shrink: 0; width: 100px;
   background: rgba(200,185,122,0.06);
   border: 1px solid var(--panel-border);
   padding: 0.4rem; text-align: center; cursor: pointer;
@@ -371,14 +373,14 @@ h1.game-title {
 }
 .operator-card.assigned { border-color: var(--gold); }
 .operator-card:active { border-color: var(--khaki); background: rgba(200,185,122,0.15); }
-.operator-avatar { font-size: 26px; display: block; margin-bottom: 2px; }
-.operator-name { font-family: var(--font-mono); font-size: 8px; color: var(--cream); line-height: 1.2; }
-.operator-stars { color: var(--gold); font-size: 9px; }
+.operator-avatar { font-size: 32px; display: block; margin-bottom: 2px; }
+.operator-name { font-family: var(--font-mono); font-size: 10px; color: var(--cream); line-height: 1.2; }
+.operator-stars { color: var(--gold); font-size: 12px; }
 .operator-level { position: absolute; top: 2px; right: 2px; background: var(--gold); color: var(--olive-dark); font-family: var(--font-mono); font-size: 7px; padding: 0 2px; font-weight: 700; }
 
 /* ── AI CO-PILOT ── */
 #ai-panel {
-  position: absolute; bottom: 130px; left: 0; right: 0;
+  position: absolute; bottom: 160px; left: 0; right: 0;
   background: var(--panel-bg);
   border-top: 1px solid var(--panel-border);
   border-bottom: 1px solid var(--panel-border);
@@ -399,11 +401,11 @@ h1.game-title {
   animation: ai-blink 1.5s ease-in-out infinite;
 }
 @keyframes ai-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.ai-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--khaki-dark); }
+.ai-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.15em; color: var(--khaki-dark); }
 .ai-close { margin-left: auto; background: none; border: none; color: var(--cream-dark); font-size: 14px; cursor: pointer; padding: 0 4px; }
 
 .ai-message {
-  font-family: var(--font-body); font-size: 13px;
+  font-family: var(--font-body); font-size: 14px;
   color: var(--cream); line-height: 1.6;
   border-left: 2px solid var(--steel-light);
   padding-left: 0.6rem;
@@ -416,8 +418,8 @@ h1.game-title {
   position: absolute; top: 50%; right: 0.75rem;
   transform: translateY(-50%);
   background: var(--steel); border: 1px solid var(--steel-light);
-  color: var(--cream); padding: 0.3rem 0.5rem;
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+  color: var(--cream); padding: 0.6rem 1rem;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em;
   cursor: pointer; z-index: 11; border-radius: 2px;
   white-space: nowrap;
 }
@@ -439,11 +441,11 @@ h1.game-title {
   padding: 1.25rem;
 }
 .modal-title {
-  font-family: var(--font-display); font-size: 1.3rem;
+  font-family: var(--font-display); font-size: 1.5rem;
   letter-spacing: 0.08em; color: var(--khaki);
   margin-bottom: 0.25rem;
 }
-.modal-sub { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); letter-spacing: 0.12em; margin-bottom: 1rem; }
+.modal-sub { font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark); letter-spacing: 0.12em; margin-bottom: 1rem; }
 .modal-divider { border: none; border-top: 1px solid var(--panel-border); margin: 0.75rem 0; }
 .modal-close {
   margin-top: 1rem; width: 100%;
@@ -462,11 +464,11 @@ h1.game-title {
 .upgrade-icon { font-size: 20px; flex-shrink: 0; }
 .upgrade-info { flex: 1; }
 .upgrade-name { font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.05em; }
-.upgrade-desc { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); }
+.upgrade-desc { font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark); }
 .upgrade-btn {
   padding: 0.35rem 0.6rem;
   background: transparent; border: 1px solid var(--khaki);
-  color: var(--khaki); font-family: var(--font-mono); font-size: 9px;
+  color: var(--khaki); font-family: var(--font-mono); font-size: 12px;
   letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
 }
 .upgrade-btn:active { background: var(--khaki); color: var(--olive-dark); }
@@ -475,7 +477,7 @@ h1.game-title {
 /* Battle result */
 .battle-result { text-align: center; padding: 0.5rem 0; }
 .result-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-.result-title { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: 0.1em; }
+.result-title { font-family: var(--font-display); font-size: 2.2rem; letter-spacing: 0.1em; }
 .result-title.victory { color: var(--gold); }
 .result-title.defeat { color: var(--danger); }
 .result-detail { font-family: var(--font-mono); font-size: 10px; color: var(--cream-dark); margin-top: 0.5rem; line-height: 1.8; }
@@ -499,10 +501,10 @@ h1.game-title {
 
 /* Turn log */
 #turn-log {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: var(--cream-dark); line-height: 1.9; letter-spacing: 0.03em;
 }
-.log-entry { display: flex; gap: 0.4rem; }
+.log-entry { display: flex; gap: 0.8rem; }
 .log-entry .tag { color: var(--khaki-dark); flex-shrink: 0; }
 .log-entry.enemy .tag { color: #c06060; }
 .log-entry.good .tag { color: #60c060; }
@@ -520,10 +522,10 @@ h1.game-title {
 }
 .back-btn {
   background: none; border: 1px solid var(--panel-border);
-  color: var(--cream-dark); padding: 0.3rem 0.6rem;
+  color: var(--cream-dark); padding: 0.5rem 0.8rem;
   font-family: var(--font-mono); font-size: 10px; cursor: pointer;
 }
-.campaign-title { font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.08em; color: var(--khaki); }
+.campaign-title { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.08em; color: var(--khaki); }
 
 .campaign-list { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
 
@@ -538,33 +540,33 @@ h1.game-title {
 .mission-card.completed { border-color: var(--gold); }
 
 .mission-num {
-  font-family: var(--font-display); font-size: 1.8rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 2.2rem; font-weight: 700;
   color: rgba(200,185,122,0.2); flex-shrink: 0; width: 2.5rem; text-align: center;
 }
 .mission-info { flex: 1; }
 .mission-name { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.05em; color: var(--cream); }
-.mission-desc { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); margin-top: 2px; }
+.mission-desc { font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark); margin-top: 2px; }
 .mission-difficulty {
   display: flex; gap: 2px;
 }
 .diff-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--panel-border); }
 .diff-pip.filled { background: var(--rust-light); }
-.mission-stars { color: var(--gold); font-size: 13px; }
+.mission-stars { color: var(--gold); font-size: 14px; }
 
 /* ── SANDBOX MODE ── */
 #sandbox-banner {
   background: linear-gradient(90deg, rgba(212,168,32,0.15), transparent);
   border: 1px solid rgba(212,168,32,0.3);
-  padding: 0.3rem 0.6rem;
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
+  padding: 0.5rem 0.8rem;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em;
   color: var(--gold); display: none;
 }
 
 /* Resource fill in sandbox */
 .sandbox-fill-btn {
   background: rgba(212,168,32,0.15); border: 1px solid rgba(212,168,32,0.4);
-  color: var(--gold); font-family: var(--font-mono); font-size: 9px;
-  padding: 0.25rem 0.5rem; cursor: pointer; letter-spacing: 0.08em;
+  color: var(--gold); font-family: var(--font-mono); font-size: 12px;
+  padding: 0.8rem 1rem; cursor: pointer; letter-spacing: 0.08em;
 }
 
 /* ── RECRUIT MODAL ── */
@@ -576,10 +578,10 @@ h1.game-title {
   transition: all 0.15s;
 }
 .recruit-card:active { border-color: var(--khaki); background: rgba(200,185,122,0.12); }
-.recruit-card .icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+.recruit-card .icon { font-size: 2.2rem; display: block; margin-bottom: 4px; }
 .recruit-card .name { font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.05em; }
-.recruit-card .cost { font-family: var(--font-mono); font-size: 9px; color: var(--gold); margin-top: 2px; }
-.recruit-card .stat { font-family: var(--font-mono); font-size: 8px; color: var(--khaki-dark); }
+.recruit-card .cost { font-family: var(--font-mono); font-size: 12px; color: var(--gold); margin-top: 2px; }
+.recruit-card .stat { font-family: var(--font-mono); font-size: 10px; color: var(--khaki-dark); }
 
 /* ── ANIMATIONS ── */
 @keyframes scanning {
@@ -623,7 +625,7 @@ h1.game-title {
 
 .damage-pop {
   position: absolute; font-family: var(--font-display); font-weight: 700;
-  font-size: 1.1rem; pointer-events: none; z-index: 15;
+  font-size: 1.5rem; pointer-events: none; z-index: 15;
   animation: pop-up 0.8s ease-out forwards;
 }
 .damage-pop.enemy { color: var(--rust-light); }
@@ -657,7 +659,7 @@ h1.game-title {
   opacity: 0; transform: scale(0.5);
 }
 .splash-sub {
-  font-family: var(--font-mono); font-size: 1.2rem; color: white;
+  font-family: var(--font-mono); font-size: 1.4rem; color: white;
   letter-spacing: 0.1em; margin-top: 0.5rem; opacity: 0;
 }
 .splash-animate .splash-title { animation: splash-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
@@ -669,14 +671,14 @@ h1.game-title {
 }
 
 /* ── ECONOMY TRACKER ── */
-.econ-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; }
+.econ-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
 .econ-card {
   background: rgba(200,185,122,0.05); border: 1px solid var(--panel-border);
   padding: 0.4rem 0.5rem; text-align: center;
 }
 .econ-val { font-family: var(--font-mono); font-size: 14px; color: var(--khaki); font-weight: 500; }
-.econ-lbl { font-family: var(--font-mono); font-size: 8px; color: var(--khaki-dark); letter-spacing: 0.1em; }
-.econ-delta { font-family: var(--font-mono); font-size: 9px; }
+.econ-lbl { font-family: var(--font-mono); font-size: 10px; color: var(--khaki-dark); letter-spacing: 0.1em; }
+.econ-delta { font-family: var(--font-mono); font-size: 12px; }
 .econ-delta.pos { color: var(--success); }
 .econ-delta.neg { color: var(--danger); }
 
@@ -698,7 +700,7 @@ h1.game-title {
 }
 .rewarded-icon { font-size: 2.8rem; margin-bottom: 0.5rem; display: block; }
 .rewarded-title {
-  font-family: var(--font-display); font-size: 1.2rem;
+  font-family: var(--font-display); font-size: 1.4rem;
   letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.25rem;
 }
 .rewarded-desc {
@@ -712,11 +714,11 @@ h1.game-title {
   padding: 0.75rem; margin-bottom: 1rem;
 }
 .rewarded-offer-val {
-  font-family: var(--font-display); font-size: 1.6rem;
+  font-family: var(--font-display); font-size: 2.2rem;
   color: var(--gold); letter-spacing: 0.05em;
 }
 .rewarded-offer-lbl {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: var(--khaki-dark); letter-spacing: 0.12em;
 }
 
@@ -730,13 +732,13 @@ h1.game-title {
   margin-bottom: 0.75rem; position: relative; overflow: hidden;
 }
 .ad-player-label {
-  font-family: var(--font-mono); font-size: 8px;
+  font-family: var(--font-mono); font-size: 10px;
   color: rgba(200,185,122,0.3); letter-spacing: 0.15em;
   position: absolute; top: 6px; left: 8px;
 }
 .ad-player-skip {
   position: absolute; top: 6px; right: 8px;
-  font-family: var(--font-mono); font-size: 8px;
+  font-family: var(--font-mono); font-size: 10px;
   color: rgba(200,185,122,0.4); letter-spacing: 0.1em;
 }
 .ad-progress-bar {
@@ -749,7 +751,7 @@ h1.game-title {
   color: var(--khaki); letter-spacing: 0.1em;
 }
 .ad-countdown-lbl {
-  font-family: var(--font-mono); font-size: 8px;
+  font-family: var(--font-mono); font-size: 10px;
   color: var(--khaki-dark); letter-spacing: 0.1em; margin-top: 4px;
 }
 
@@ -767,7 +769,7 @@ h1.game-title {
   width: 100%; padding: 0.45rem;
   background: transparent; border: 1px solid var(--panel-border);
   color: var(--cream-dark); font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.1em; cursor: pointer;
+  font-size: 12px; letter-spacing: 0.1em; cursor: pointer;
 }
 .skip-ad-btn:active { background: rgba(200,185,122,0.08); }
 
@@ -793,7 +795,7 @@ h1.game-title {
 }
 #interstitial-overlay.open { display: flex; }
 .interstitial-label {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   letter-spacing: 0.15em; color: var(--khaki-dark);
   margin-bottom: 0.75rem;
 }
@@ -811,7 +813,7 @@ h1.game-title {
   font-size: 10px; letter-spacing: 0.1em; cursor: pointer;
 }
 .interstitial-timer {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: var(--khaki-dark); margin-top: 0.5rem; letter-spacing: 0.1em;
 }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -987,7 +989,7 @@ h1.game-title {
 
     <!-- ACTIONS -->
     <div class="tab-content active" id="tab-actions">
-      <div id="no-selection" style="font-family:var(--font-mono);font-size:10px;color:var(--khaki-dark);letter-spacing:0.1em;padding:0.3rem 0;">
+      <div id="no-selection" style="font-family:var(--font-mono);font-size:12px;color:var(--khaki-dark);letter-spacing:0.1em;padding:0.3rem 0;">
         SELECT A TERRITORY TO BEGIN
       </div>
       <div id="territory-info" style="display:none;">
@@ -1128,7 +1130,7 @@ h1.game-title {
     <div style="font-size:3rem;margin-bottom:0.5rem;" id="gameover-icon">🏳</div>
     <div class="modal-title" id="gameover-title">DEFEAT</div>
     <div class="modal-sub" id="gameover-sub">YOUR FORCES HAVE BEEN OVERWHELMED</div>
-    <div id="gameover-stats" style="font-family:var(--font-mono);font-size:10px;color:var(--cream-dark);line-height:2;margin-top:0.5rem;"></div>
+    <div id="gameover-stats" style="font-family:var(--font-mono);font-size:12px;color:var(--cream-dark);line-height:2;margin-top:0.5rem;"></div>
     <hr class="modal-divider">
     <button class="modal-close" onclick="restartGame()">PLAY AGAIN</button>
     <button class="modal-close" style="margin-top:0.4rem;" onclick="showScreen('title-screen')">MAIN MENU</button>
@@ -1157,8 +1159,8 @@ h1.game-title {
        <div id="loadout-op-display" style="display: flex; align-items: center; gap: 1rem;">
           <div id="loadout-op-avatar" style="font-size: 2.5rem;">👤</div>
           <div>
-             <div id="loadout-op-name" style="font-family: var(--font-display); font-size: 1.1rem;">UNASSIGNED</div>
-             <div id="loadout-op-skill" style="font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark);">NO BONUS ACTIVE</div>
+             <div id="loadout-op-name" style="font-family: var(--font-display); font-size: 1.5rem;">UNASSIGNED</div>
+             <div id="loadout-op-skill" style="font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark);">NO BONUS ACTIVE</div>
           </div>
           <button class="upgrade-btn" style="margin-left: auto;" onclick="showLoadoutOpSelect()">CHANGE</button>
        </div>
@@ -1170,11 +1172,11 @@ h1.game-title {
     </div>
 
     <div style="font-family: var(--font-mono); font-size: 10px; color: var(--gold); margin-bottom: 0.5rem;">KILLSTREAK SELECTION</div>
-    <div id="loadout-streaks" style="display: flex; gap: 0.4rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border: 1px solid var(--panel-border);">
-       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.2rem;">📡</div><div style="font-size: 7px;">3 KILLS</div></div>
-       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.2rem;">🛩️</div><div style="font-size: 7px;">5 KILLS</div></div>
-       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.2rem;">☢️</div><div style="font-size: 7px;">15 KILLS</div></div>
-       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.2rem;">🔥</div><div style="font-size: 7px;">30 KILLS</div></div>
+    <div id="loadout-streaks" style="display: flex; gap: 0.8rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border: 1px solid var(--panel-border);">
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">📡</div><div style="font-size: 7px;">3 KILLS</div></div>
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">🛩️</div><div style="font-size: 7px;">5 KILLS</div></div>
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">☢️</div><div style="font-size: 7px;">15 KILLS</div></div>
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">🔥</div><div style="font-size: 7px;">30 KILLS</div></div>
     </div>
 
     <hr class="modal-divider">
@@ -1407,7 +1409,7 @@ function renderCampaignList() {
         <div class="mission-desc">${m.year} · ${m.desc}</div>
         <div style="margin-top:4px;display:flex;gap:0.5rem;align-items:center;">
           <div class="mission-difficulty">${Array(5).fill(0).map((_,j)=>`<div class="diff-pip${j<m.difficulty?' filled':''}"></div>`).join('')}</div>
-          <span class="mission-stars" style="font-size:11px;">${stars}</span>
+          <span class="mission-stars" style="font-size:13px;">${stars}</span>
         </div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
@@ -1535,7 +1537,7 @@ function showLoadoutOpSelect() {
     const div = document.createElement('div');
     div.style.cssText = 'display:flex; gap:1rem; align-items:center; padding:0.6rem; border-bottom:1px solid var(--panel-border); cursor:pointer;';
     div.innerHTML = `
-      <div style="font-size:2rem;">${op.avatar}</div>
+      <div style="font-size:2.5rem;">${op.avatar}</div>
       <div>
         <div style="font-family:var(--font-display); font-size:1rem;">${op.name}</div>
         <div style="font-family:var(--font-mono); font-size:9px; color:var(--gold);">${op.skill}</div>
@@ -1699,7 +1701,7 @@ function renderMap() {
 
     div.innerHTML = `
       <div class="terr-name">${t.name} ${terrainIcon}</div>
-      ${genData ? `<div style="font-size:10px;">${genData.avatar}</div>` : ''}
+      ${genData ? `<div style="font-size:12px;">${genData.avatar}</div>` : ''}
       <div class="terr-troops">${t.troops}</div>
       <div style="width:80%;margin-top:2px;">
         <div class="prog-bar-wrap" style="height:3px;"><div class="prog-bar ${hpClass}" style="width:${hp}%"></div></div>
@@ -2375,20 +2377,20 @@ function assignOperator() {
   list.innerHTML = '';
 
   if (G.operators.length === 0) {
-    list.innerHTML = '<div style="font-family:var(--font-mono);font-size:10px;color:var(--khaki-dark);padding:0.5rem;">No operators available. Visit the Academy.</div>';
+    list.innerHTML = '<div style="font-family:var(--font-mono);font-size:12px;color:var(--khaki-dark);padding:0.5rem;">No operators available. Visit the Academy.</div>';
   }
 
   G.operators.forEach(gen => {
     const isAssigned = G.assignedOperators[t.id] === gen.id;
     const div = document.createElement('div');
-    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(200,185,122,0.1);cursor:pointer;';
+    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.8rem 0;border-bottom:1px solid rgba(200,185,122,0.1);cursor:pointer;';
     div.innerHTML = `
       <div style="font-size:1.8rem;flex-shrink:0;">${gen.avatar}</div>
       <div style="flex:1;">
         <div style="font-family:var(--font-display);font-size:0.9rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
         <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold); font-weight:700;">${gen.ability}: ${gen.skill}</div>
-        <div style="font-family:var(--font-body);font-size:10px;color:var(--cream-dark);font-style:italic;margin:2px 0;">${gen.bio}</div>
-        <div style="color:var(--gold);font-size:11px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
+        <div style="font-family:var(--font-body);font-size:12px;color:var(--cream-dark);font-style:italic;margin:2px 0;">${gen.bio}</div>
+        <div style="color:var(--gold);font-size:13px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
       </div>
       <button style="padding:0.3rem 0.6rem;background:${isAssigned?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${isAssigned?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;">${isAssigned?'ASSIGNED':'ASSIGN'}</button>
     `;
@@ -2443,19 +2445,19 @@ function renderAcademy() {
     const canAfford = G.resources.gold >= gen.cost;
 
     const div = document.createElement('div');
-    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(200,185,122,0.1);';
+    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.8rem 0;border-bottom:1px solid rgba(200,185,122,0.1);';
     div.innerHTML = `
-      <div style="font-size:2rem;flex-shrink:0;">${gen.avatar}</div>
+      <div style="font-size:2.5rem;flex-shrink:0;">${gen.avatar}</div>
       <div style="flex:1;">
-        <div style="font-family:var(--font-display);font-size:0.95rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
+        <div style="font-family:var(--font-display);font-size:1.15rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
         <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold); font-weight:700;">${gen.ability}: ${gen.skill}</div>
-        <div style="font-family:var(--font-body);font-size:10px;color:var(--cream-dark);font-style:italic;margin:2px 0;">"${gen.bio}"</div>
-        <div style="color:var(--gold);font-size:11px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
+        <div style="font-family:var(--font-body);font-size:12px;color:var(--cream-dark);font-style:italic;margin:2px 0;">"${gen.bio}"</div>
+        <div style="color:var(--gold);font-size:13px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
         ${owned
           ? '<div style="font-family:var(--font-mono);font-size:9px;color:var(--success);">ENLISTED</div>'
-          : `<button onclick="hireOperator('${gen.id}')" style="padding:0.35rem 0.6rem;background:${canAfford?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${canAfford?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;opacity:${canAfford?1:0.5};">${gen.cost}G</button>`
+          : `<button onclick="hireOperator('${gen.id}')" style="padding:0.6rem 1rem;background:${canAfford?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${canAfford?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;opacity:${canAfford?1:0.5};">${gen.cost}G</button>`
         }
       </div>
     `;
@@ -2685,7 +2687,7 @@ function renderHUD() {
   if (perkEl) {
     perkEl.innerHTML = G.loadout.perks.map(pid => {
       const p = PERK_POOL.find(x => x.id === pid);
-      return `<span style="font-size:10px;" title="${p?.name}">${p?.icon || ''}</span>`;
+      return `<span style="font-size:12px;" title="${p?.name}">${p?.icon || ''}</span>`;
     }).join('');
 
     // Add XP bar mini
