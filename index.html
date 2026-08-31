@@ -12,6 +12,7 @@
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
 <style>
 :root {
+  --touch-target: 48px;
   --khaki: #c8b97a;
   --khaki-dark: #8a7d45;
   --khaki-light: #e8d9a0;
@@ -57,6 +58,19 @@ body {
 /* ── SCREENS ── */
 .screen { position: absolute; inset: 0; display: none; flex-direction: column; overflow: hidden; }
 .screen.active { display: flex; }
+
+#name-screen {
+  background: radial-gradient(ellipse at 50% 30%, #1a2a3a 0%, #050a10 100%);
+  align-items: center; justify-content: center; text-align: center;
+}
+.name-input-wrap { width: 100%; max-width: 300px; padding: 2rem; }
+#player-name-input {
+  width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.4);
+  border: 1px solid var(--panel-border); color: var(--khaki);
+  font-family: var(--font-mono); font-size: 1.4rem; text-align: center;
+  margin-bottom: 1rem; outline: none;
+}
+#player-name-input:focus { border-color: var(--khaki); box-shadow: 0 0 10px rgba(200,185,122,0.2); }
 
 /* ── TITLE SCREEN ── */
 #title-screen {
@@ -110,7 +124,7 @@ h1.game-title {
 
 .title-sub {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.2em;
   color: var(--khaki-dark);
   margin-bottom: 2.5rem;
@@ -156,7 +170,7 @@ h1.game-title {
 
 .title-version {
   position: absolute; bottom: 1rem;
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: rgba(200,185,122,0.3); letter-spacing: 0.15em;
 }
 
@@ -164,18 +178,18 @@ h1.game-title {
 #hud-top {
   background: var(--panel-bg);
   border-bottom: 1px solid var(--panel-border);
-  padding: 0.5rem 0.75rem;
+  padding: 0.8rem 1rem;
   display: flex; align-items: center; gap: 0.75rem;
   flex-shrink: 0; z-index: 10;
 }
 
 .hud-label {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   letter-spacing: 0.15em; color: var(--khaki-dark);
   display: block; margin-bottom: 1px;
 }
 .hud-value {
-  font-family: var(--font-mono); font-size: 13px;
+  font-family: var(--font-mono); font-size: 14px;
   color: var(--khaki); font-weight: 500;
 }
 
@@ -184,7 +198,7 @@ h1.game-title {
 .hud-turn {
   background: var(--khaki);
   color: var(--olive-dark);
-  padding: 0.3rem 0.6rem;
+  padding: 0.5rem 0.8rem;
   font-family: var(--font-display);
   font-size: 0.7rem;
   letter-spacing: 0.1em;
@@ -202,12 +216,41 @@ h1.game-title {
   overflow: hidden;
   background: var(--map-sea);
   touch-action: pan-x pan-y;
+  filter: url(#tactical-noise);
+}
+
+#map-container::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%),
+              linear-gradient(90deg, rgba(255, 0, 0, 0.03), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.03));
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none; z-index: 10;
+  opacity: 0.4;
+}
+
+.scan-line {
+  position: absolute; left: 0; width: 100%; height: 10%;
+  background: linear-gradient(to bottom, transparent, rgba(0, 255, 0, 0.05), transparent);
+  pointer-events: none; z-index: 11;
+  animation: scanning 8s linear infinite;
+}
+
+.combat-fx {
+  position: absolute;
+  width: 40px; height: 40px;
+  border: 2px solid var(--danger);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 12;
+  animation: pulse-impact 0.6s ease-out forwards;
 }
 
 #map-canvas {
   position: absolute;
   cursor: pointer;
   image-rendering: pixelated;
+  touch-action: none;
 }
 
 /* Territory overlays */
@@ -233,17 +276,17 @@ h1.game-title {
   to { filter: brightness(1.4); }
 }
 
-.terr-name { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-align: center; line-height: 1.2; }
-.terr-troops { font-family: var(--font-display); font-size: 11px; font-weight: 700; color: #fff; }
+.terr-name { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.05em; color: rgba(255,255,255,0.9); text-align: center; line-height: 1.2; }
+.terr-troops { font-family: var(--font-display); font-size: 12px; font-weight: 700; color: #fff; }
 .terr-flag { font-size: 14px; line-height: 1; }
 
 /* ── BOTTOM PANEL ── */
 #bottom-panel {
   background: var(--panel-bg);
   border-top: 1px solid var(--panel-border);
-  padding: 0.5rem 0.75rem 0.6rem;
+  padding: 0.8rem 1rem 1rem;
   flex-shrink: 0; z-index: 10;
-  min-height: 130px;
+  min-height: 160px;
 }
 
 .panel-tabs {
@@ -253,7 +296,7 @@ h1.game-title {
   flex: 1; padding: 0.3rem; background: transparent;
   border: 1px solid var(--panel-border);
   color: var(--cream-dark); font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.1em; cursor: pointer;
+  font-size: 12px; letter-spacing: 0.1em; cursor: pointer;
   transition: all 0.15s;
 }
 .panel-tab.active {
@@ -266,14 +309,14 @@ h1.game-title {
 
 /* Action buttons */
 .action-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem;
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem;
 }
 .action-btn {
-  padding: 0.5rem 0.2rem;
+  padding: 0.7rem 0.4rem;
   background: rgba(200,185,122,0.08);
   border: 1px solid var(--panel-border);
   color: var(--cream); font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.05em; cursor: pointer;
+  font-size: 12px; letter-spacing: 0.05em; cursor: pointer;
   text-align: center; transition: all 0.15s;
   display: flex; flex-direction: column; align-items: center; gap: 2px;
 }
@@ -289,7 +332,7 @@ h1.game-title {
 }
 .terr-info-main { flex: 1; }
 .terr-info-name {
-  font-family: var(--font-display); font-size: 1.1rem;
+  font-family: var(--font-display); font-size: 1.5rem;
   color: var(--khaki); letter-spacing: 0.05em;
   margin-bottom: 2px;
 }
@@ -300,7 +343,7 @@ h1.game-title {
 .stat-row { display: flex; gap: 0.5rem; }
 .stat-pill {
   background: rgba(200,185,122,0.1); border: 1px solid var(--panel-border);
-  padding: 1px 6px; font-family: var(--font-mono); font-size: 9px;
+  padding: 1px 6px; font-family: var(--font-mono); font-size: 12px;
   color: var(--khaki-dark);
 }
 .attack-btn {
@@ -314,30 +357,30 @@ h1.game-title {
 }
 .attack-btn:active { background: var(--rust-light); transform: scale(0.97); }
 
-/* ── GENERALS PANEL ── */
-.general-scroll {
+/* ── OPERATORS PANEL ── */
+.operator-scroll {
   display: flex; gap: 0.5rem; overflow-x: auto; padding-bottom: 0.25rem;
   scrollbar-width: none;
 }
-.general-scroll::-webkit-scrollbar { display: none; }
+.operator-scroll::-webkit-scrollbar { display: none; }
 
-.general-card {
-  flex-shrink: 0; width: 80px;
+.operator-card {
+  flex-shrink: 0; width: 100px;
   background: rgba(200,185,122,0.06);
   border: 1px solid var(--panel-border);
   padding: 0.4rem; text-align: center; cursor: pointer;
   transition: all 0.15s; position: relative;
 }
-.general-card.assigned { border-color: var(--gold); }
-.general-card:active { border-color: var(--khaki); background: rgba(200,185,122,0.15); }
-.general-avatar { font-size: 26px; display: block; margin-bottom: 2px; }
-.general-name { font-family: var(--font-mono); font-size: 8px; color: var(--cream); line-height: 1.2; }
-.general-stars { color: var(--gold); font-size: 9px; }
-.general-level { position: absolute; top: 2px; right: 2px; background: var(--gold); color: var(--olive-dark); font-family: var(--font-mono); font-size: 7px; padding: 0 2px; font-weight: 700; }
+.operator-card.assigned { border-color: var(--gold); }
+.operator-card:active { border-color: var(--khaki); background: rgba(200,185,122,0.15); }
+.operator-avatar { font-size: 32px; display: block; margin-bottom: 2px; }
+.operator-name { font-family: var(--font-mono); font-size: 10px; color: var(--cream); line-height: 1.2; }
+.operator-stars { color: var(--gold); font-size: 12px; }
+.operator-level { position: absolute; top: 2px; right: 2px; background: var(--gold); color: var(--olive-dark); font-family: var(--font-mono); font-size: 7px; padding: 0 2px; font-weight: 700; }
 
 /* ── AI CO-PILOT ── */
 #ai-panel {
-  position: absolute; bottom: 130px; left: 0; right: 0;
+  position: absolute; bottom: 160px; left: 0; right: 0;
   background: var(--panel-bg);
   border-top: 1px solid var(--panel-border);
   border-bottom: 1px solid var(--panel-border);
@@ -358,11 +401,11 @@ h1.game-title {
   animation: ai-blink 1.5s ease-in-out infinite;
 }
 @keyframes ai-blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-.ai-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.15em; color: var(--khaki-dark); }
+.ai-label { font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.15em; color: var(--khaki-dark); }
 .ai-close { margin-left: auto; background: none; border: none; color: var(--cream-dark); font-size: 14px; cursor: pointer; padding: 0 4px; }
 
 .ai-message {
-  font-family: var(--font-body); font-size: 13px;
+  font-family: var(--font-body); font-size: 14px;
   color: var(--cream); line-height: 1.6;
   border-left: 2px solid var(--steel-light);
   padding-left: 0.6rem;
@@ -375,8 +418,8 @@ h1.game-title {
   position: absolute; top: 50%; right: 0.75rem;
   transform: translateY(-50%);
   background: var(--steel); border: 1px solid var(--steel-light);
-  color: var(--cream); padding: 0.3rem 0.5rem;
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.08em;
+  color: var(--cream); padding: 0.6rem 1rem;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.08em;
   cursor: pointer; z-index: 11; border-radius: 2px;
   white-space: nowrap;
 }
@@ -398,11 +441,11 @@ h1.game-title {
   padding: 1.25rem;
 }
 .modal-title {
-  font-family: var(--font-display); font-size: 1.3rem;
+  font-family: var(--font-display); font-size: 1.5rem;
   letter-spacing: 0.08em; color: var(--khaki);
   margin-bottom: 0.25rem;
 }
-.modal-sub { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); letter-spacing: 0.12em; margin-bottom: 1rem; }
+.modal-sub { font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark); letter-spacing: 0.12em; margin-bottom: 1rem; }
 .modal-divider { border: none; border-top: 1px solid var(--panel-border); margin: 0.75rem 0; }
 .modal-close {
   margin-top: 1rem; width: 100%;
@@ -421,11 +464,11 @@ h1.game-title {
 .upgrade-icon { font-size: 20px; flex-shrink: 0; }
 .upgrade-info { flex: 1; }
 .upgrade-name { font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.05em; }
-.upgrade-desc { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); }
+.upgrade-desc { font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark); }
 .upgrade-btn {
   padding: 0.35rem 0.6rem;
   background: transparent; border: 1px solid var(--khaki);
-  color: var(--khaki); font-family: var(--font-mono); font-size: 9px;
+  color: var(--khaki); font-family: var(--font-mono); font-size: 12px;
   letter-spacing: 0.08em; cursor: pointer; transition: all 0.15s; flex-shrink: 0;
 }
 .upgrade-btn:active { background: var(--khaki); color: var(--olive-dark); }
@@ -434,7 +477,7 @@ h1.game-title {
 /* Battle result */
 .battle-result { text-align: center; padding: 0.5rem 0; }
 .result-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-.result-title { font-family: var(--font-display); font-size: 1.6rem; letter-spacing: 0.1em; }
+.result-title { font-family: var(--font-display); font-size: 2.2rem; letter-spacing: 0.1em; }
 .result-title.victory { color: var(--gold); }
 .result-title.defeat { color: var(--danger); }
 .result-detail { font-family: var(--font-mono); font-size: 10px; color: var(--cream-dark); margin-top: 0.5rem; line-height: 1.8; }
@@ -458,10 +501,10 @@ h1.game-title {
 
 /* Turn log */
 #turn-log {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: var(--cream-dark); line-height: 1.9; letter-spacing: 0.03em;
 }
-.log-entry { display: flex; gap: 0.4rem; }
+.log-entry { display: flex; gap: 0.8rem; }
 .log-entry .tag { color: var(--khaki-dark); flex-shrink: 0; }
 .log-entry.enemy .tag { color: #c06060; }
 .log-entry.good .tag { color: #60c060; }
@@ -479,10 +522,10 @@ h1.game-title {
 }
 .back-btn {
   background: none; border: 1px solid var(--panel-border);
-  color: var(--cream-dark); padding: 0.3rem 0.6rem;
+  color: var(--cream-dark); padding: 0.5rem 0.8rem;
   font-family: var(--font-mono); font-size: 10px; cursor: pointer;
 }
-.campaign-title { font-family: var(--font-display); font-size: 1.1rem; letter-spacing: 0.08em; color: var(--khaki); }
+.campaign-title { font-family: var(--font-display); font-size: 1.5rem; letter-spacing: 0.08em; color: var(--khaki); }
 
 .campaign-list { flex: 1; overflow-y: auto; padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
 
@@ -497,33 +540,33 @@ h1.game-title {
 .mission-card.completed { border-color: var(--gold); }
 
 .mission-num {
-  font-family: var(--font-display); font-size: 1.8rem; font-weight: 700;
+  font-family: var(--font-display); font-size: 2.2rem; font-weight: 700;
   color: rgba(200,185,122,0.2); flex-shrink: 0; width: 2.5rem; text-align: center;
 }
 .mission-info { flex: 1; }
 .mission-name { font-family: var(--font-display); font-size: 1rem; letter-spacing: 0.05em; color: var(--cream); }
-.mission-desc { font-family: var(--font-mono); font-size: 9px; color: var(--khaki-dark); margin-top: 2px; }
+.mission-desc { font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark); margin-top: 2px; }
 .mission-difficulty {
   display: flex; gap: 2px;
 }
 .diff-pip { width: 6px; height: 6px; border-radius: 50%; background: var(--panel-border); }
 .diff-pip.filled { background: var(--rust-light); }
-.mission-stars { color: var(--gold); font-size: 13px; }
+.mission-stars { color: var(--gold); font-size: 14px; }
 
 /* ── SANDBOX MODE ── */
 #sandbox-banner {
   background: linear-gradient(90deg, rgba(212,168,32,0.15), transparent);
   border: 1px solid rgba(212,168,32,0.3);
-  padding: 0.3rem 0.6rem;
-  font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em;
+  padding: 0.5rem 0.8rem;
+  font-family: var(--font-mono); font-size: 12px; letter-spacing: 0.12em;
   color: var(--gold); display: none;
 }
 
 /* Resource fill in sandbox */
 .sandbox-fill-btn {
   background: rgba(212,168,32,0.15); border: 1px solid rgba(212,168,32,0.4);
-  color: var(--gold); font-family: var(--font-mono); font-size: 9px;
-  padding: 0.25rem 0.5rem; cursor: pointer; letter-spacing: 0.08em;
+  color: var(--gold); font-family: var(--font-mono); font-size: 12px;
+  padding: 0.8rem 1rem; cursor: pointer; letter-spacing: 0.08em;
 }
 
 /* ── RECRUIT MODAL ── */
@@ -535,14 +578,42 @@ h1.game-title {
   transition: all 0.15s;
 }
 .recruit-card:active { border-color: var(--khaki); background: rgba(200,185,122,0.12); }
-.recruit-card .icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+.recruit-card .icon { font-size: 2.2rem; display: block; margin-bottom: 4px; }
 .recruit-card .name { font-family: var(--font-display); font-size: 0.85rem; letter-spacing: 0.05em; }
-.recruit-card .cost { font-family: var(--font-mono); font-size: 9px; color: var(--gold); margin-top: 2px; }
-.recruit-card .stat { font-family: var(--font-mono); font-size: 8px; color: var(--khaki-dark); }
+.recruit-card .cost { font-family: var(--font-mono); font-size: 12px; color: var(--gold); margin-top: 2px; }
+.recruit-card .stat { font-family: var(--font-mono); font-size: 10px; color: var(--khaki-dark); }
 
 /* ── ANIMATIONS ── */
+@keyframes scanning {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(1000%); }
+}
+
+@keyframes pulse-impact {
+  0% { transform: scale(0.5); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
 @keyframes slide-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes typewriter {
+  from { width: 0; }
+  to { width: 100%; }
+}
+
+#briefing-overlay {
+  position: fixed; inset: 0; background: #000; z-index: 2000;
+  display: none; flex-direction: column; padding: 2rem;
+  font-family: var(--font-mono); color: var(--success);
+  overflow-y: auto;
+}
+#briefing-overlay.active { display: flex; animation: fade-in 0.5s ease-out; }
+.briefing-header { font-size: 1.5rem; color: var(--gold); border-bottom: 1px solid var(--gold); padding-bottom: 0.5rem; margin-bottom: 1rem; }
+.briefing-row { margin-bottom: 0.5rem; display: flex; gap: 1rem; }
+.briefing-label { color: var(--khaki-dark); width: 100px; flex-shrink: 0; }
+.briefing-text { line-height: 1.4; white-space: pre-wrap; }
+.briefing-intel { background: rgba(0,255,0,0.05); padding: 1rem; border: 1px solid rgba(0,255,0,0.2); margin-top: 1rem; }
+.briefing-footer { margin-top: auto; padding-top: 2rem; text-align: center; }
 
 .battle-flash {
   position: absolute; inset: 0;
@@ -554,7 +625,7 @@ h1.game-title {
 
 .damage-pop {
   position: absolute; font-family: var(--font-display); font-weight: 700;
-  font-size: 1.1rem; pointer-events: none; z-index: 15;
+  font-size: 1.5rem; pointer-events: none; z-index: 15;
   animation: pop-up 0.8s ease-out forwards;
 }
 .damage-pop.enemy { color: var(--rust-light); }
@@ -564,15 +635,50 @@ h1.game-title {
   to { transform: translateY(-40px); opacity: 0; }
 }
 
+.hitmarker {
+  position: absolute; width: 20px; height: 20px;
+  pointer-events: none; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+}
+.hitmarker::before, .hitmarker::after {
+  content: ""; position: absolute; background: white;
+}
+.hitmarker::before { width: 2px; height: 100%; transform: rotate(45deg); }
+.hitmarker::after { width: 2px; height: 100%; transform: rotate(-45deg); }
+.hitmarker.fade { animation: hm-fade 0.2s ease-out forwards; }
+@keyframes hm-fade { 0% { opacity: 1; scale: 1; } 100% { opacity: 0; scale: 1.5; } }
+
+#splash-overlay {
+  position: fixed; inset: 0; pointer-events: none; z-index: 200;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center;
+}
+.splash-title {
+  font-family: var(--font-display); font-size: 3rem; color: var(--gold);
+  text-shadow: 0 0 20px rgba(212,168,32,0.8); letter-spacing: 0.2em;
+  opacity: 0; transform: scale(0.5);
+}
+.splash-sub {
+  font-family: var(--font-mono); font-size: 1.4rem; color: white;
+  letter-spacing: 0.1em; margin-top: 0.5rem; opacity: 0;
+}
+.splash-animate .splash-title { animation: splash-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.splash-animate .splash-sub { animation: fade-in 0.3s 0.3s forwards; }
+
+@keyframes splash-in {
+  0% { opacity: 0; transform: scale(0.5) translateY(50px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
 /* ── ECONOMY TRACKER ── */
-.econ-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.4rem; }
+.econ-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.8rem; }
 .econ-card {
   background: rgba(200,185,122,0.05); border: 1px solid var(--panel-border);
   padding: 0.4rem 0.5rem; text-align: center;
 }
 .econ-val { font-family: var(--font-mono); font-size: 14px; color: var(--khaki); font-weight: 500; }
-.econ-lbl { font-family: var(--font-mono); font-size: 8px; color: var(--khaki-dark); letter-spacing: 0.1em; }
-.econ-delta { font-family: var(--font-mono); font-size: 9px; }
+.econ-lbl { font-family: var(--font-mono); font-size: 10px; color: var(--khaki-dark); letter-spacing: 0.1em; }
+.econ-delta { font-family: var(--font-mono); font-size: 12px; }
 .econ-delta.pos { color: var(--success); }
 .econ-delta.neg { color: var(--danger); }
 
@@ -594,7 +700,7 @@ h1.game-title {
 }
 .rewarded-icon { font-size: 2.8rem; margin-bottom: 0.5rem; display: block; }
 .rewarded-title {
-  font-family: var(--font-display); font-size: 1.2rem;
+  font-family: var(--font-display); font-size: 1.4rem;
   letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.25rem;
 }
 .rewarded-desc {
@@ -608,11 +714,11 @@ h1.game-title {
   padding: 0.75rem; margin-bottom: 1rem;
 }
 .rewarded-offer-val {
-  font-family: var(--font-display); font-size: 1.6rem;
+  font-family: var(--font-display); font-size: 2.2rem;
   color: var(--gold); letter-spacing: 0.05em;
 }
 .rewarded-offer-lbl {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: var(--khaki-dark); letter-spacing: 0.12em;
 }
 
@@ -626,13 +732,13 @@ h1.game-title {
   margin-bottom: 0.75rem; position: relative; overflow: hidden;
 }
 .ad-player-label {
-  font-family: var(--font-mono); font-size: 8px;
+  font-family: var(--font-mono); font-size: 10px;
   color: rgba(200,185,122,0.3); letter-spacing: 0.15em;
   position: absolute; top: 6px; left: 8px;
 }
 .ad-player-skip {
   position: absolute; top: 6px; right: 8px;
-  font-family: var(--font-mono); font-size: 8px;
+  font-family: var(--font-mono); font-size: 10px;
   color: rgba(200,185,122,0.4); letter-spacing: 0.1em;
 }
 .ad-progress-bar {
@@ -645,7 +751,7 @@ h1.game-title {
   color: var(--khaki); letter-spacing: 0.1em;
 }
 .ad-countdown-lbl {
-  font-family: var(--font-mono); font-size: 8px;
+  font-family: var(--font-mono); font-size: 10px;
   color: var(--khaki-dark); letter-spacing: 0.1em; margin-top: 4px;
 }
 
@@ -663,7 +769,7 @@ h1.game-title {
   width: 100%; padding: 0.45rem;
   background: transparent; border: 1px solid var(--panel-border);
   color: var(--cream-dark); font-family: var(--font-mono);
-  font-size: 9px; letter-spacing: 0.1em; cursor: pointer;
+  font-size: 12px; letter-spacing: 0.1em; cursor: pointer;
 }
 .skip-ad-btn:active { background: rgba(200,185,122,0.08); }
 
@@ -689,7 +795,7 @@ h1.game-title {
 }
 #interstitial-overlay.open { display: flex; }
 .interstitial-label {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   letter-spacing: 0.15em; color: var(--khaki-dark);
   margin-bottom: 0.75rem;
 }
@@ -707,7 +813,7 @@ h1.game-title {
   font-size: 10px; letter-spacing: 0.1em; cursor: pointer;
 }
 .interstitial-timer {
-  font-family: var(--font-mono); font-size: 9px;
+  font-family: var(--font-mono); font-size: 12px;
   color: var(--khaki-dark); margin-top: 0.5rem; letter-spacing: 0.1em;
 }
 ::-webkit-scrollbar-track { background: transparent; }
@@ -769,7 +875,17 @@ h1.game-title {
 </div>
 
 <!-- ═══════════════════════════════════ TITLE SCREEN ═══════════════════════════════════ -->
-<div id="title-screen" class="screen active">
+<div id="name-screen" class="screen active">
+  <div class="name-input-wrap">
+    <div class="title-eyebrow">COMMANDER REGISTRATION</div>
+    <div class="title-sub">ENTER YOUR TACTICAL CALLSIGN</div>
+    <input type="text" id="player-name-input" placeholder="CALLSIGN" maxlength="12">
+    <div id="name-error" style="color: var(--danger); font-family: var(--font-mono); font-size: 10px; margin-bottom: 1rem; min-height: 12px;"></div>
+    <button class="menu-btn primary" onclick="submitPlayerName()"><span>REGISTER</span></button>
+  </div>
+</div>
+
+<div id="title-screen" class="screen">
   <div class="title-emblem">
     <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg">
       <polygon points="30,5 35,22 52,22 38,33 43,50 30,39 17,50 22,33 8,22 25,22" />
@@ -782,7 +898,8 @@ h1.game-title {
   <button class="menu-btn primary" onclick="startCampaign()"><span>⚔ CAMPAIGN</span></button>
   <button class="menu-btn" onclick="startSandbox()"><span>⬡ SANDBOX MODE</span></button>
   <button class="menu-btn" onclick="showConquest()"><span>🌍 WORLD CONQUEST</span></button>
-  <button class="menu-btn" onclick="showGeneralsMenu()"><span>★ GENERALS ACADEMY</span></button>
+  <button class="menu-btn" onclick="showLoadout()"><span>🎒 CREATE-A-CLASS</span></button>
+  <button class="menu-btn" onclick="showOperatorsMenu()"><span>★ OPERATORS ACADEMY</span></button>
   <!-- TITLE SCREEN BANNER AD -->
   <div class="title-ad-banner">
     <!-- REPLACE with real AdSense banner unit: -->
@@ -819,6 +936,11 @@ h1.game-title {
       <span class="hud-label">MANPOWER</span>
       <span class="hud-value" id="hud-manpower">0</span>
     </div>
+    <div class="resource-block" style="flex: 1.5; border-right: 1px solid var(--panel-border);">
+      <span class="hud-label" id="hud-rank-label">RANK 1</span>
+      <span class="hud-value" id="hud-player-name" style="color:var(--success);">GHOST</span>
+      <div id="hud-perks" style="display:flex; gap:2px; justify-content:center; margin-top:2px;"></div>
+    </div>
     <button class="hud-turn" id="hud-turn-btn" onclick="endTurn()">END TURN<br><span id="hud-turn-num" style="font-size:8px;opacity:0.7;">TURN 1</span></button>
     <button id="ai-trigger" onclick="toggleAI()">AI ◆</button>
   </div>
@@ -827,10 +949,22 @@ h1.game-title {
 
   <!-- Map -->
   <div id="map-container">
+    <div class="scan-line"></div>
     <canvas id="map-canvas"></canvas>
     <div id="territories-layer"></div>
     <div id="turn-overlay"><div class="turn-text" id="turn-text"></div></div>
   </div>
+
+  <svg style="display:none;">
+    <filter id="tactical-noise">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
+      <feColorMatrix type="saturate" values="0" />
+      <feComponentTransfer>
+        <feFuncA type="linear" slope="0.05" />
+      </feComponentTransfer>
+      <feComposite operator="in" in2="SourceGraphic" />
+    </filter>
+  </svg>
 
   <!-- AI Co-pilot -->
   <div id="ai-panel">
@@ -848,14 +982,14 @@ h1.game-title {
   <div id="bottom-panel">
     <div class="panel-tabs">
       <button class="panel-tab active" onclick="switchTab('actions')">ACTIONS</button>
-      <button class="panel-tab" onclick="switchTab('generals')">GENERALS</button>
+      <button class="panel-tab" onclick="switchTab('operators')">OPERATORS</button>
       <button class="panel-tab" onclick="switchTab('economy')">ECONOMY</button>
       <button class="panel-tab" onclick="switchTab('log')">LOG</button>
     </div>
 
     <!-- ACTIONS -->
     <div class="tab-content active" id="tab-actions">
-      <div id="no-selection" style="font-family:var(--font-mono);font-size:10px;color:var(--khaki-dark);letter-spacing:0.1em;padding:0.3rem 0;">
+      <div id="no-selection" style="font-family:var(--font-mono);font-size:12px;color:var(--khaki-dark);letter-spacing:0.1em;padding:0.3rem 0;">
         SELECT A TERRITORY TO BEGIN
       </div>
       <div id="territory-info" style="display:none;">
@@ -873,20 +1007,24 @@ h1.game-title {
               </div>
             </div>
           </div>
-          <button class="attack-btn" id="attack-btn" onclick="initiateAttack()" style="display:none;">⚔ ATTACK</button>
+          <div style="display:flex; flex-direction:column; gap:0.4rem;">
+            <button class="attack-btn" id="attack-btn" onclick="initiateAttack()" style="display:none;">⚔ ATTACK</button>
+            <button class="attack-btn" id="melee-btn" onclick="meleeAttack()" style="display:none; background:var(--steel); border-color:var(--steel-light);">🔪 MELEE</button>
+          </div>
         </div>
+        <div id="killstreak-container" style="display:flex; gap:0.4rem; margin-bottom:0.5rem; overflow-x:auto; padding-bottom:2px;"></div>
         <div class="action-grid" style="margin-top:0.5rem;" id="action-grid-btns">
           <button class="action-btn" onclick="recruitTroops()"><span class="icon">🪖</span>RECRUIT</button>
           <button class="action-btn" onclick="openUpgrades()"><span class="icon">⚙</span>UPGRADE</button>
-          <button class="action-btn" onclick="assignGeneral()"><span class="icon">★</span>GENERAL</button>
+          <button class="action-btn" onclick="assignOperator()"><span class="icon">★</span>OPERATOR</button>
           <button class="action-btn" onclick="fortify()"><span class="icon">🏰</span>FORTIFY</button>
         </div>
       </div>
     </div>
 
-    <!-- GENERALS -->
-    <div class="tab-content" id="tab-generals">
-      <div class="general-scroll" id="generals-scroll"></div>
+    <!-- OPERATORS -->
+    <div class="tab-content" id="tab-operators">
+      <div class="operator-scroll" id="operators-scroll"></div>
     </div>
 
     <!-- ECONOMY -->
@@ -906,9 +1044,39 @@ h1.game-title {
 
   <!-- Notification -->
   <div id="notif"></div>
+
+  <!-- Splash Overlay -->
+  <div id="splash-overlay">
+    <div class="splash-title" id="splash-title">LEVEL UP</div>
+    <div class="splash-sub" id="splash-sub">RANK 15 UNLOCKED</div>
+  </div>
 </div>
 
 <!-- ═══════════════════════════════════ MODALS ═══════════════════════════════════ -->
+
+<!-- Briefing Overlay -->
+<div id="briefing-overlay">
+  <div class="briefing-header">MISSION BRIEFING // TOP SECRET</div>
+  <div class="briefing-row">
+    <div class="briefing-label">OP_NAME:</div>
+    <div id="brief-name" class="briefing-text"></div>
+  </div>
+  <div class="briefing-row">
+    <div class="briefing-label">LOCATION:</div>
+    <div id="brief-loc" class="briefing-text"></div>
+  </div>
+  <div class="briefing-row">
+    <div class="briefing-label">OBJECTIVE:</div>
+    <div id="brief-desc" class="briefing-text"></div>
+  </div>
+  <div class="briefing-intel">
+    <div style="font-size: 0.7rem; margin-bottom: 0.5rem; opacity: 0.6;">[ ENCRYPTION KEY: GHOST-V9 ]</div>
+    <div id="brief-intel" class="briefing-text"></div>
+  </div>
+  <div class="briefing-footer">
+    <button class="menu-btn primary" onclick="startMissionGame()"><span>ENGAGE MISSION</span></button>
+  </div>
+</div>
 
 <!-- Battle Result -->
 <div class="modal-overlay" id="battle-modal">
@@ -945,14 +1113,14 @@ h1.game-title {
   </div>
 </div>
 
-<!-- General Assign Modal -->
-<div class="modal-overlay" id="general-modal">
+<!-- Operator Assign Modal -->
+<div class="modal-overlay" id="operator-modal">
   <div class="modal">
-    <div class="modal-title">ASSIGN GENERAL</div>
+    <div class="modal-title">ASSIGN OPERATOR</div>
     <div class="modal-sub">CHOOSE COMMANDER FOR THIS TERRITORY</div>
-    <div id="general-assign-list"></div>
+    <div id="operator-assign-list"></div>
     <hr class="modal-divider">
-    <button class="modal-close" onclick="closeModal('general-modal')">CANCEL</button>
+    <button class="modal-close" onclick="closeModal('operator-modal')">CANCEL</button>
   </div>
 </div>
 
@@ -962,21 +1130,68 @@ h1.game-title {
     <div style="font-size:3rem;margin-bottom:0.5rem;" id="gameover-icon">🏳</div>
     <div class="modal-title" id="gameover-title">DEFEAT</div>
     <div class="modal-sub" id="gameover-sub">YOUR FORCES HAVE BEEN OVERWHELMED</div>
-    <div id="gameover-stats" style="font-family:var(--font-mono);font-size:10px;color:var(--cream-dark);line-height:2;margin-top:0.5rem;"></div>
+    <div id="gameover-stats" style="font-family:var(--font-mono);font-size:12px;color:var(--cream-dark);line-height:2;margin-top:0.5rem;"></div>
     <hr class="modal-divider">
     <button class="modal-close" onclick="restartGame()">PLAY AGAIN</button>
     <button class="modal-close" style="margin-top:0.4rem;" onclick="showScreen('title-screen')">MAIN MENU</button>
   </div>
 </div>
 
-<!-- Generals Academy Modal -->
+<!-- Operators Academy Modal -->
 <div class="modal-overlay" id="academy-modal">
   <div class="modal">
-    <div class="modal-title">GENERALS ACADEMY</div>
+    <div class="modal-title">OPERATORS ACADEMY</div>
     <div class="modal-sub">HIRE COMMANDERS FROM MILITARY ACADEMIES</div>
     <div id="academy-list"></div>
     <hr class="modal-divider">
     <button class="modal-close" onclick="closeModal('academy-modal')">CLOSE</button>
+  </div>
+</div>
+
+<!-- Loadout / Create-A-Class Modal -->
+<div class="modal-overlay" id="loadout-modal">
+  <div class="modal" style="max-width: 420px;">
+    <div class="modal-title">CREATE-A-CLASS</div>
+    <div class="modal-sub">CUSTOMIZE YOUR TACTICAL LOADOUT</div>
+
+    <div style="background: rgba(200,185,122,0.05); padding: 0.75rem; border: 1px solid var(--panel-border); margin-bottom: 1rem;">
+       <div style="font-family: var(--font-mono); font-size: 10px; color: var(--gold); margin-bottom: 0.5rem;">PRIMARY OPERATOR</div>
+       <div id="loadout-op-display" style="display: flex; align-items: center; gap: 1rem;">
+          <div id="loadout-op-avatar" style="font-size: 2.5rem;">👤</div>
+          <div>
+             <div id="loadout-op-name" style="font-family: var(--font-display); font-size: 1.5rem;">UNASSIGNED</div>
+             <div id="loadout-op-skill" style="font-family: var(--font-mono); font-size: 12px; color: var(--khaki-dark);">NO BONUS ACTIVE</div>
+          </div>
+          <button class="upgrade-btn" style="margin-left: auto;" onclick="showLoadoutOpSelect()">CHANGE</button>
+       </div>
+    </div>
+
+    <div style="font-family: var(--font-mono); font-size: 10px; color: var(--gold); margin-bottom: 0.5rem;">ACTIVE PERKS (MAX 3)</div>
+    <div id="loadout-perks-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-bottom: 1rem;">
+       <!-- Perk cards go here -->
+    </div>
+
+    <div style="font-family: var(--font-mono); font-size: 10px; color: var(--gold); margin-bottom: 0.5rem;">KILLSTREAK SELECTION</div>
+    <div id="loadout-streaks" style="display: flex; gap: 0.8rem; background: rgba(0,0,0,0.2); padding: 0.5rem; border: 1px solid var(--panel-border);">
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">📡</div><div style="font-size: 7px;">3 KILLS</div></div>
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">🛩️</div><div style="font-size: 7px;">5 KILLS</div></div>
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">☢️</div><div style="font-size: 7px;">15 KILLS</div></div>
+       <div style="text-align: center; flex: 1; opacity: 0.8;"><div style="font-size: 1.4rem;">🔥</div><div style="font-size: 7px;">30 KILLS</div></div>
+    </div>
+
+    <hr class="modal-divider">
+    <button class="menu-btn primary" style="width: 100%;" onclick="closeModal('loadout-modal')"><span>SAVE LOADOUT</span></button>
+  </div>
+</div>
+
+<!-- Operator Selection Modal (Nested for Loadout) -->
+<div class="modal-overlay" id="loadout-op-modal">
+  <div class="modal">
+    <div class="modal-title">SELECT OPERATOR</div>
+    <div class="modal-sub">SELECT FROM YOUR ENLISTED PERSONNEL</div>
+    <div id="loadout-op-list"></div>
+    <hr class="modal-divider">
+    <button class="modal-close" onclick="closeModal('loadout-op-modal')">BACK</button>
   </div>
 </div>
 
@@ -985,6 +1200,12 @@ h1.game-title {
 // GAME STATE
 // ═══════════════════════════════════════════════════════════════════════════════
 const G = {
+  playerName: 'GHOST',
+  rank: 1,
+  xp: 0,
+  killstreak: 0,
+  perks: [],
+  pickups: {},
   turn: 1,
   sandbox: false,
   currentMission: null,
@@ -1008,21 +1229,30 @@ const G = {
   // Territories array
   territories: [],
 
-  // Generals roster
-  generals: [],
-  assignedGenerals: {}, // territoryId -> generalId
+  // Operators roster
+  operators: [],
+  assignedOperators: {}, // territoryId -> operatorId
 
   // Turn log
   log: [],
 
   // Stats
-  stats: { turns: 0, territoriesCapt: 0, unitsLost: 0, enemiesDefeated: 0 },
+  stats: { turns: 0, territoriesCapt: 0, unitsLost: 0, enemiesDefeated: 0, totalKills: 0 },
+  currentStreak: 0,
+  streakRewards: { uav: false, airstrike: false, nuke: false, flamethrower: false },
+  perkCharges: { secondLife: 0, wallPhase: 0 },
 
   // Fortified territories
   fortified: {},
 
   // Completed missions
   completedMissions: JSON.parse(localStorage.getItem('ic_missions') || '[]'),
+
+  // Loadout state
+  loadout: {
+    primaryOperator: 'op1',
+    perks: ['hardline', 'scavenger']
+  }
 };
 
 // ═══════════════════════════════════════════════════════════════════════════════
@@ -1037,15 +1267,24 @@ const UNIT_TYPES = [
   { id: 'navy', name: 'Navy', icon: '⚓', attack: 14, defense: 10, cost: { gold: 200, industry: 70 }, desc: 'Coastal bombardment' },
 ];
 
-const GENERAL_POOL = [
-  { id: 'g1', name: 'Eisenhower', nation: '🇺🇸', avatar: '👨‍✈️', skill: 'Logistics +25%', stars: 5, bonus: { type: 'logistics', val: 0.25 }, cost: 300, level: 1 },
-  { id: 'g2', name: 'Rommel', nation: '🇩🇪', avatar: '🎖', skill: 'Armor +40%', stars: 5, bonus: { type: 'armor', val: 0.4 }, cost: 350, level: 1 },
-  { id: 'g3', name: 'Zhukov', nation: '🇷🇺', avatar: '⭐', skill: 'Defense +35%', stars: 5, bonus: { type: 'defense', val: 0.35 }, cost: 320, level: 1 },
-  { id: 'g4', name: 'Yamamoto', nation: '🇯🇵', avatar: '🎌', skill: 'Navy +50%', stars: 4, bonus: { type: 'naval', val: 0.5 }, cost: 250, level: 1 },
-  { id: 'g5', name: 'Montgomery', nation: '🇬🇧', avatar: '🫡', skill: 'Infantry +30%', stars: 4, bonus: { type: 'infantry', val: 0.3 }, cost: 220, level: 1 },
-  { id: 'g6', name: 'Patton', nation: '🇺🇸', avatar: '🪖', skill: 'Attack +20%', stars: 4, bonus: { type: 'attack', val: 0.2 }, cost: 200, level: 1 },
-  { id: 'g7', name: 'De Gaulle', nation: '🇫🇷', avatar: '🎗', skill: 'Morale +15%', stars: 3, bonus: { type: 'morale', val: 0.15 }, cost: 150, level: 1 },
-  { id: 'g8', name: 'Liu Bocheng', nation: '🇨🇳', avatar: '⚔', skill: 'Guerrilla +35%', stars: 3, bonus: { type: 'guerrilla', val: 0.35 }, cost: 140, level: 1 },
+const OPERATOR_POOL = [
+  { id: 'op1', name: 'SPECTER', nation: '🇺🇸', avatar: '🥷', ability: 'SPECIAL SHOOTER', skill: '+40% Crit Chance', stars: 5, bonus: { type: 'crit', val: 0.4 }, cost: 350, level: 1, bio: 'Precision marksman. Special Shooter ability grants high-damage critical hits.' },
+  { id: 'op2', name: 'ORACLE', nation: '🇬🇧', avatar: '🎧', ability: 'SUPPLIES MASTER', skill: '-25% Recruit Cost', stars: 5, bonus: { type: 'supplies', val: 0.25 }, cost: 320, level: 1, bio: 'Logistics genius. Supplies Master makes unit recruitment significantly cheaper.' },
+  { id: 'op3', name: 'RONIN', nation: '🇯🇵', avatar: '⚔️', ability: 'BLADE MASTER', skill: '+60% Melee Damage', stars: 5, bonus: { type: 'melee', val: 0.6 }, cost: 380, level: 1, bio: 'Close quarters specialist. Blade Master makes melee attacks devastating.' },
+  { id: 'op4', name: 'MAMBA', nation: '🇰🇪', avatar: '🐍', ability: 'GHOST STRIKE', skill: 'Invisible in Jungle', stars: 4, bonus: { type: 'stealth', val: 1.0 }, cost: 250, level: 1, bio: 'Guerrilla expert. Ghost Strike prevents enemy attacks in jungle terrain.' },
+  { id: 'op5', name: 'VALKYRIE', nation: '🇳🇴', avatar: '🚁', ability: 'AIRSTRIKE COORD', skill: '+30% Streak Speed', stars: 4, bonus: { type: 'streaks', val: 0.3 }, cost: 280, level: 1, bio: 'Air support expert. Coordinates killstreaks for faster deployment.' },
+  { id: 'op6', name: 'SLEDGE', nation: '🇨🇦', avatar: '🔨', ability: 'HARD BREACHER', skill: 'Ignores Fortification', stars: 4, bonus: { type: 'breach', val: 1.0 }, cost: 240, level: 1, bio: 'Structural specialist. Hard Breacher bypasses all enemy defensive structures.' },
+  { id: 'op7', name: 'SIROCCO', nation: '🇪🇬', avatar: '🏜️', ability: 'DESERT VETERAN', skill: '+40% Atk in Desert', stars: 3, bonus: { type: 'desertAtk', val: 0.4 }, cost: 180, level: 1, bio: 'Arid combat veteran. Desert Veteran provides massive bonuses in desert terrain.' },
+  { id: 'op8', name: 'JADE', nation: '🇨🇳', avatar: '💠', ability: 'SIGNAL JAMMER', skill: '-30% Enemy Attack', stars: 3, bonus: { type: 'jam', val: 0.3 }, cost: 160, level: 1, bio: 'Electronic warfare expert. Signal Jammer weakens all nearby enemy units.' },
+];
+
+const PERK_POOL = [
+  { id: 'hardline', name: 'HARDLINE', desc: 'Streaks require 10% fewer kills', icon: '⚡' },
+  { id: 'ghost', name: 'GHOST', desc: 'Immune to Counter-UAV interference', icon: '👻' },
+  { id: 'scavenger', name: 'SCAVENGER', desc: '30% higher chance for field drops', icon: '🎒' },
+  { id: 'flak', name: 'FLAK JACKET', desc: 'Reduce damage from enemy strikes by 40%', icon: '🛡️' },
+  { id: 'shrapnel', name: 'SHRAPNEL', desc: 'Explosive units deal +20% damage', icon: '💥' },
+  { id: 'overkill', name: 'OVERKILL', desc: 'Primary Operator bonus increased by 50%', icon: '🔫' }
 ];
 
 const UPGRADES_LIST = [
@@ -1058,75 +1297,75 @@ const UPGRADES_LIST = [
 ];
 
 const MISSIONS = [
-  { id: 'm1', name: 'Operation Torch', year: '1942', desc: 'Push the Axis from North Africa', difficulty: 1, player: 'ALLIES', reward: { gold: 200, industry: 100 }, mapKey: 'africa' },
-  { id: 'm2', name: 'Siege of Stalingrad', year: '1942', desc: 'Hold the city against German advance', difficulty: 2, player: 'SOVIETS', reward: { gold: 250, industry: 150 }, mapKey: 'eastern' },
-  { id: 'm3', name: 'Operation Overlord', year: '1944', desc: 'Storm the beaches of Normandy', difficulty: 3, player: 'ALLIES', reward: { gold: 300, industry: 200 }, mapKey: 'western' },
-  { id: 'm4', name: 'Battle of the Bulge', year: '1944', desc: 'Repel the German counteroffensive', difficulty: 3, player: 'ALLIES', reward: { gold: 280, industry: 180 }, mapKey: 'bulge' },
-  { id: 'm5', name: 'Pacific Campaign', year: '1943', desc: 'Island-hopping to Tokyo', difficulty: 4, player: 'USA', reward: { gold: 350, industry: 220 }, mapKey: 'pacific' },
-  { id: 'm6', name: 'Fall of Berlin', year: '1945', desc: 'The final assault on the Nazi capital', difficulty: 5, player: 'SOVIETS', reward: { gold: 500, industry: 300 }, mapKey: 'berlin' },
+  { id: 'm1', name: 'Signal Flare', year: '2024', desc: 'Infiltrate the Gulf sector and neutralize rogue cells.', difficulty: 1, player: 'GHOST', reward: { gold: 300, industry: 150 }, mapKey: 'africa', intel: 'SATCOM indicates heavy insurgent activity in the region. Proceed with extreme caution.' },
+  { id: 'm2', name: 'Frozen Tundra', year: '2024', desc: 'Intercept a deep-state convoy in the Eastern Block.', difficulty: 2, player: 'SHADOW', reward: { gold: 400, industry: 200 }, mapKey: 'eastern', intel: 'Intelligence suggests a high-value asset is being transported. Capture is priority one.' },
+  { id: 'm3', name: 'Black Tide', year: '2024', desc: 'Secure the Western coastline against a private military fleet.', difficulty: 3, player: 'GHOST', reward: { gold: 500, industry: 300 }, mapKey: 'western', intel: 'The PMC "Iron Shield" has established a beachhead. Repel them at all costs.' },
+  { id: 'm4', name: 'Silent Winter', year: '2024', desc: 'Disrupt a hidden missile facility in the mountains.', difficulty: 3, player: 'GHOST', reward: { gold: 550, industry: 350 }, mapKey: 'bulge', intel: 'Long-range scans show active silos. Deactivate them before launch window.' },
+  { id: 'm5', name: 'Pacific Storm', year: '2024', desc: 'Neutralize an illegal sea-base in the Pacific archipelago.', difficulty: 4, player: 'SHADOW', reward: { gold: 700, industry: 400 }, mapKey: 'pacific', intel: 'The target is a converted oil rig. Expect heavy naval and air resistance.' },
+  { id: 'm6', name: 'Shadow Fall', year: '2025', desc: 'The final assault on the Shadow Protocol HQ.', difficulty: 5, player: 'GHOST', reward: { gold: 1000, industry: 600 }, mapKey: 'berlin', intel: 'All paths lead here. End the conspiracy and secure the future.' },
 ];
 
 // Map templates
 const MAP_TEMPLATES = {
   africa: [
-    { id: 't1', name: 'TUNISIA', x: 38, y: 15, w: 18, h: 12, owner: 'enemy', troops: 120, maxTroops: 200, prod: { gold: 30, industry: 10, manpower: 20 } },
-    { id: 't2', name: 'ALGERIA', x: 18, y: 12, w: 18, h: 14, owner: 'enemy', troops: 90, maxTroops: 160, prod: { gold: 25, industry: 8, manpower: 18 } },
-    { id: 't3', name: 'LIBYA', x: 38, y: 27, w: 20, h: 14, owner: 'enemy', troops: 100, maxTroops: 180, prod: { gold: 35, industry: 15, manpower: 15 } },
-    { id: 't4', name: 'MOROCCO', x: 5, y: 12, w: 12, h: 14, owner: 'neutral', troops: 50, maxTroops: 120, prod: { gold: 20, industry: 5, manpower: 15 } },
-    { id: 't5', name: 'EGYPT', x: 60, y: 18, w: 16, h: 14, owner: 'player', troops: 150, maxTroops: 250, prod: { gold: 40, industry: 20, manpower: 30 } },
-    { id: 't6', name: 'CYRENAICA', x: 55, y: 30, w: 16, h: 12, owner: 'player', troops: 100, maxTroops: 180, prod: { gold: 30, industry: 12, manpower: 20 } },
-    { id: 't7', name: 'ETHIOPIA', x: 65, y: 42, w: 16, h: 14, owner: 'ally', troops: 80, maxTroops: 150, prod: { gold: 20, industry: 8, manpower: 25 } },
-    { id: 't8', name: 'TRIPOLI', x: 30, y: 30, w: 12, h: 12, owner: 'neutral', troops: 40, maxTroops: 100, prod: { gold: 25, industry: 10, manpower: 12 } },
+    { id: 't1', name: 'TUNISIA', x: 38, y: 15, w: 18, h: 12, owner: 'enemy', troops: 120, maxTroops: 200, prod: { gold: 30, industry: 10, manpower: 20 }, terrain: 'urban' },
+    { id: 't2', name: 'ALGERIA', x: 18, y: 12, w: 18, h: 14, owner: 'enemy', troops: 90, maxTroops: 160, prod: { gold: 25, industry: 8, manpower: 18 }, terrain: 'jungle' },
+    { id: 't3', name: 'LIBYA', x: 38, y: 27, w: 20, h: 14, owner: 'enemy', troops: 100, maxTroops: 180, prod: { gold: 35, industry: 15, manpower: 15 }, terrain: 'desert' },
+    { id: 't4', name: 'MOROCCO', x: 5, y: 12, w: 12, h: 14, owner: 'neutral', troops: 50, maxTroops: 120, prod: { gold: 20, industry: 5, manpower: 15 }, terrain: 'mountain' },
+    { id: 't5', name: 'EGYPT', x: 60, y: 18, w: 16, h: 14, owner: 'player', troops: 150, maxTroops: 250, prod: { gold: 40, industry: 20, manpower: 30 }, terrain: 'urban' },
+    { id: 't6', name: 'CYRENAICA', x: 55, y: 30, w: 16, h: 12, owner: 'player', troops: 100, maxTroops: 180, prod: { gold: 30, industry: 12, manpower: 20 }, terrain: 'desert' },
+    { id: 't7', name: 'ETHIOPIA', x: 65, y: 42, w: 16, h: 14, owner: 'ally', troops: 80, maxTroops: 150, prod: { gold: 20, industry: 8, manpower: 25 }, terrain: 'jungle' },
+    { id: 't8', name: 'TRIPOLI', x: 30, y: 30, w: 12, h: 12, owner: 'neutral', troops: 40, maxTroops: 100, prod: { gold: 25, industry: 10, manpower: 12 }, terrain: 'urban' },
   ],
   eastern: [
-    { id: 't1', name: 'STALINGRAD', x: 55, y: 25, w: 16, h: 12, owner: 'player', troops: 200, maxTroops: 350, prod: { gold: 50, industry: 30, manpower: 40 } },
-    { id: 't2', name: 'MOSCOW', x: 45, y: 10, w: 18, h: 12, owner: 'ally', troops: 180, maxTroops: 300, prod: { gold: 60, industry: 40, manpower: 50 } },
-    { id: 't3', name: 'UKRAINE', x: 30, y: 28, w: 20, h: 14, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 35, manpower: 40 } },
-    { id: 't4', name: 'KURSK', x: 40, y: 30, w: 14, h: 10, owner: 'enemy', troops: 140, maxTroops: 250, prod: { gold: 35, industry: 25, manpower: 30 } },
-    { id: 't5', name: 'LENINGRAD', x: 30, y: 8, w: 14, h: 10, owner: 'player', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 30, manpower: 35 } },
-    { id: 't6', name: 'MINSK', x: 20, y: 18, w: 14, h: 10, owner: 'enemy', troops: 100, maxTroops: 200, prod: { gold: 30, industry: 20, manpower: 25 } },
-    { id: 't7', name: 'CAUCASUS', x: 55, y: 40, w: 18, h: 14, owner: 'neutral', troops: 60, maxTroops: 150, prod: { gold: 25, industry: 15, manpower: 20 } },
-    { id: 't8', name: 'CRIMEA', x: 40, y: 42, w: 14, h: 10, owner: 'enemy', troops: 90, maxTroops: 180, prod: { gold: 30, industry: 18, manpower: 22 } },
+    { id: 't1', name: 'STALINGRAD', x: 55, y: 25, w: 16, h: 12, owner: 'player', troops: 200, maxTroops: 350, prod: { gold: 50, industry: 30, manpower: 40 }, terrain: 'urban' },
+    { id: 't2', name: 'MOSCOW', x: 45, y: 10, w: 18, h: 12, owner: 'ally', troops: 180, maxTroops: 300, prod: { gold: 60, industry: 40, manpower: 50 }, terrain: 'urban' },
+    { id: 't3', name: 'UKRAINE', x: 30, y: 28, w: 20, h: 14, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 35, manpower: 40 }, terrain: 'jungle' },
+    { id: 't4', name: 'KURSK', x: 40, y: 30, w: 14, h: 10, owner: 'enemy', troops: 140, maxTroops: 250, prod: { gold: 35, industry: 25, manpower: 30 }, terrain: 'desert' },
+    { id: 't5', name: 'LENINGRAD', x: 30, y: 8, w: 14, h: 10, owner: 'player', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 30, manpower: 35 }, terrain: 'urban' },
+    { id: 't6', name: 'MINSK', x: 20, y: 18, w: 14, h: 10, owner: 'enemy', troops: 100, maxTroops: 200, prod: { gold: 30, industry: 20, manpower: 25 }, terrain: 'urban' },
+    { id: 't7', name: 'CAUCASUS', x: 55, y: 40, w: 18, h: 14, owner: 'neutral', troops: 60, maxTroops: 150, prod: { gold: 25, industry: 15, manpower: 20 }, terrain: 'mountain' },
+    { id: 't8', name: 'CRIMEA', x: 40, y: 42, w: 14, h: 10, owner: 'enemy', troops: 90, maxTroops: 180, prod: { gold: 30, industry: 18, manpower: 22 }, terrain: 'desert' },
   ],
   western: [
-    { id: 't1', name: 'NORMANDY', x: 20, y: 20, w: 16, h: 12, owner: 'neutral', troops: 160, maxTroops: 280, prod: { gold: 40, industry: 25, manpower: 35 } },
-    { id: 't2', name: 'PARIS', x: 28, y: 28, w: 14, h: 12, owner: 'enemy', troops: 180, maxTroops: 300, prod: { gold: 60, industry: 40, manpower: 45 } },
-    { id: 't3', name: 'ENGLAND', x: 15, y: 5, w: 18, h: 12, owner: 'player', troops: 200, maxTroops: 350, prod: { gold: 70, industry: 50, manpower: 55 } },
-    { id: 't4', name: 'BRITTANY', x: 10, y: 25, w: 12, h: 12, owner: 'neutral', troops: 60, maxTroops: 140, prod: { gold: 20, industry: 10, manpower: 18 } },
-    { id: 't5', name: 'BELGIUM', x: 30, y: 15, w: 12, h: 10, owner: 'ally', troops: 100, maxTroops: 200, prod: { gold: 35, industry: 25, manpower: 30 } },
-    { id: 't6', name: 'RHINE', x: 42, y: 22, w: 14, h: 12, owner: 'enemy', troops: 150, maxTroops: 260, prod: { gold: 45, industry: 35, manpower: 38 } },
-    { id: 't7', name: 'BERLIN', x: 50, y: 14, w: 14, h: 12, owner: 'enemy', troops: 200, maxTroops: 380, prod: { gold: 65, industry: 45, manpower: 50 } },
-    { id: 't8', name: 'ITALY', x: 38, y: 40, w: 14, h: 18, owner: 'enemy', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 28, manpower: 32 } },
+    { id: 't1', name: 'NORMANDY', x: 20, y: 20, w: 16, h: 12, owner: 'neutral', troops: 160, maxTroops: 280, prod: { gold: 40, industry: 25, manpower: 35 }, terrain: 'jungle' },
+    { id: 't2', name: 'PARIS', x: 28, y: 28, w: 14, h: 12, owner: 'enemy', troops: 180, maxTroops: 300, prod: { gold: 60, industry: 40, manpower: 45 }, terrain: 'urban' },
+    { id: 't3', name: 'ENGLAND', x: 15, y: 5, w: 18, h: 12, owner: 'player', troops: 200, maxTroops: 350, prod: { gold: 70, industry: 50, manpower: 55 }, terrain: 'urban' },
+    { id: 't4', name: 'BRITTANY', x: 10, y: 25, w: 12, h: 12, owner: 'neutral', troops: 60, maxTroops: 140, prod: { gold: 20, industry: 10, manpower: 18 }, terrain: 'mountain' },
+    { id: 't5', name: 'BELGIUM', x: 30, y: 15, w: 12, h: 10, owner: 'ally', troops: 100, maxTroops: 200, prod: { gold: 35, industry: 25, manpower: 30 }, terrain: 'urban' },
+    { id: 't6', name: 'RHINE', x: 42, y: 22, w: 14, h: 12, owner: 'enemy', troops: 150, maxTroops: 260, prod: { gold: 45, industry: 35, manpower: 38 }, terrain: 'mountain' },
+    { id: 't7', name: 'BERLIN', x: 50, y: 14, w: 14, h: 12, owner: 'enemy', troops: 200, maxTroops: 380, prod: { gold: 65, industry: 45, manpower: 50 }, terrain: 'urban' },
+    { id: 't8', name: 'ITALY', x: 38, y: 40, w: 14, h: 18, owner: 'enemy', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 28, manpower: 32 }, terrain: 'mountain' },
   ],
   bulge: [
-    { id: 't1', name: 'ARDENNES', x: 30, y: 28, w: 16, h: 14, owner: 'enemy', troops: 200, maxTroops: 350, prod: { gold: 40, industry: 20, manpower: 35 } },
-    { id: 't2', name: 'BASTOGNE', x: 38, y: 36, w: 12, h: 10, owner: 'player', troops: 80, maxTroops: 200, prod: { gold: 30, industry: 15, manpower: 25 } },
-    { id: 't3', name: 'LIÈGE', x: 25, y: 22, w: 14, h: 10, owner: 'player', troops: 150, maxTroops: 280, prod: { gold: 50, industry: 30, manpower: 40 } },
-    { id: 't4', name: 'ANTWERP', x: 18, y: 12, w: 16, h: 12, owner: 'ally', troops: 120, maxTroops: 240, prod: { gold: 55, industry: 35, manpower: 38 } },
-    { id: 't5', name: 'COLOGNE', x: 50, y: 20, w: 14, h: 12, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 30, manpower: 35 } },
-    { id: 't6', name: 'LUXEMBOURG', x: 35, y: 20, w: 10, h: 8, owner: 'neutral', troops: 40, maxTroops: 120, prod: { gold: 20, industry: 10, manpower: 15 } },
-    { id: 't7', name: 'PARIS', x: 10, y: 40, w: 16, h: 12, owner: 'ally', troops: 140, maxTroops: 260, prod: { gold: 60, industry: 40, manpower: 42 } },
-    { id: 't8', name: 'BERLIN', x: 62, y: 12, w: 16, h: 12, owner: 'enemy', troops: 220, maxTroops: 400, prod: { gold: 65, industry: 45, manpower: 50 } },
+    { id: 't1', name: 'ARDENNES', x: 30, y: 28, w: 16, h: 14, owner: 'enemy', troops: 200, maxTroops: 350, prod: { gold: 40, industry: 20, manpower: 35 }, terrain: 'jungle' },
+    { id: 't2', name: 'BASTOGNE', x: 38, y: 36, w: 12, h: 10, owner: 'player', troops: 80, maxTroops: 200, prod: { gold: 30, industry: 15, manpower: 25 }, terrain: 'urban' },
+    { id: 't3', name: 'LIÈGE', x: 25, y: 22, w: 14, h: 10, owner: 'player', troops: 150, maxTroops: 280, prod: { gold: 50, industry: 30, manpower: 40 }, terrain: 'urban' },
+    { id: 't4', name: 'ANTWERP', x: 18, y: 12, w: 16, h: 12, owner: 'ally', troops: 120, maxTroops: 240, prod: { gold: 55, industry: 35, manpower: 38 }, terrain: 'urban' },
+    { id: 't5', name: 'COLOGNE', x: 50, y: 20, w: 14, h: 12, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 30, manpower: 35 }, terrain: 'urban' },
+    { id: 't6', name: 'LUXEMBOURG', x: 35, y: 20, w: 10, h: 8, owner: 'neutral', troops: 40, maxTroops: 120, prod: { gold: 20, industry: 10, manpower: 15 }, terrain: 'mountain' },
+    { id: 't7', name: 'PARIS', x: 10, y: 40, w: 16, h: 12, owner: 'ally', troops: 140, maxTroops: 260, prod: { gold: 60, industry: 40, manpower: 42 }, terrain: 'urban' },
+    { id: 't8', name: 'BERLIN', x: 62, y: 12, w: 16, h: 12, owner: 'enemy', troops: 220, maxTroops: 400, prod: { gold: 65, industry: 45, manpower: 50 }, terrain: 'urban' },
   ],
   pacific: [
-    { id: 't1', name: 'MIDWAY', x: 10, y: 22, w: 14, h: 10, owner: 'player', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 20, manpower: 30 } },
-    { id: 't2', name: 'GUADALCANAL', x: 55, y: 42, w: 16, h: 12, owner: 'enemy', troops: 140, maxTroops: 240, prod: { gold: 30, industry: 15, manpower: 25 } },
-    { id: 't3', name: 'PHILIPPINES', x: 60, y: 28, w: 14, h: 14, owner: 'enemy', troops: 180, maxTroops: 320, prod: { gold: 50, industry: 30, manpower: 38 } },
-    { id: 't4', name: 'HAWAII', x: 5, y: 30, w: 12, h: 10, owner: 'ally', troops: 150, maxTroops: 260, prod: { gold: 60, industry: 40, manpower: 45 } },
-    { id: 't5', name: 'IWOJIWA', x: 70, y: 25, w: 12, h: 10, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 35, industry: 18, manpower: 28 } },
-    { id: 't6', name: 'SAIPAN', x: 68, y: 15, w: 12, h: 10, owner: 'enemy', troops: 140, maxTroops: 260, prod: { gold: 30, industry: 15, manpower: 25 } },
-    { id: 't7', name: 'TOKYO', x: 75, y: 8, w: 14, h: 12, owner: 'enemy', troops: 250, maxTroops: 450, prod: { gold: 80, industry: 60, manpower: 60 } },
-    { id: 't8', name: 'OKINAWA', x: 68, y: 35, w: 12, h: 10, owner: 'enemy', troops: 170, maxTroops: 300, prod: { gold: 35, industry: 20, manpower: 30 } },
+    { id: 't1', name: 'MIDWAY', x: 10, y: 22, w: 14, h: 10, owner: 'player', troops: 120, maxTroops: 220, prod: { gold: 40, industry: 20, manpower: 30 }, terrain: 'urban' },
+    { id: 't2', name: 'GUADALCANAL', x: 55, y: 42, w: 16, h: 12, owner: 'enemy', troops: 140, maxTroops: 240, prod: { gold: 30, industry: 15, manpower: 25 }, terrain: 'jungle' },
+    { id: 't3', name: 'PHILIPPINES', x: 60, y: 28, w: 14, h: 14, owner: 'enemy', troops: 180, maxTroops: 320, prod: { gold: 50, industry: 30, manpower: 38 }, terrain: 'jungle' },
+    { id: 't4', name: 'HAWAII', x: 5, y: 30, w: 12, h: 10, owner: 'ally', troops: 150, maxTroops: 260, prod: { gold: 60, industry: 40, manpower: 45 }, terrain: 'jungle' },
+    { id: 't5', name: 'IWOJIWA', x: 70, y: 25, w: 12, h: 10, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 35, industry: 18, manpower: 28 }, terrain: 'mountain' },
+    { id: 't6', name: 'SAIPAN', x: 68, y: 15, w: 12, h: 10, owner: 'enemy', troops: 140, maxTroops: 260, prod: { gold: 30, industry: 15, manpower: 25 }, terrain: 'jungle' },
+    { id: 't7', name: 'TOKYO', x: 75, y: 8, w: 14, h: 12, owner: 'enemy', troops: 250, maxTroops: 450, prod: { gold: 80, industry: 60, manpower: 60 }, terrain: 'urban' },
+    { id: 't8', name: 'OKINAWA', x: 68, y: 35, w: 12, h: 10, owner: 'enemy', troops: 170, maxTroops: 300, prod: { gold: 35, industry: 20, manpower: 30 }, terrain: 'jungle' },
   ],
   berlin: [
-    { id: 't1', name: 'WARSAW', x: 35, y: 20, w: 16, h: 12, owner: 'player', troops: 200, maxTroops: 360, prod: { gold: 50, industry: 30, manpower: 40 } },
-    { id: 't2', name: 'BERLIN', x: 48, y: 22, w: 18, h: 14, owner: 'enemy', troops: 280, maxTroops: 500, prod: { gold: 80, industry: 60, manpower: 60 } },
-    { id: 't3', name: 'KÖNIGSBERG', x: 40, y: 10, w: 14, h: 10, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 40, industry: 25, manpower: 32 } },
-    { id: 't4', name: 'POZNAN', x: 38, y: 28, w: 12, h: 10, owner: 'enemy', troops: 140, maxTroops: 250, prod: { gold: 35, industry: 22, manpower: 28 } },
-    { id: 't5', name: 'LENINGRAD', x: 20, y: 8, w: 16, h: 12, owner: 'ally', troops: 180, maxTroops: 320, prod: { gold: 55, industry: 35, manpower: 45 } },
-    { id: 't6', name: 'MINSK', x: 22, y: 24, w: 14, h: 12, owner: 'player', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 28, manpower: 35 } },
-    { id: 't7', name: 'PRAGUE', x: 42, y: 38, w: 14, h: 12, owner: 'neutral', troops: 80, maxTroops: 180, prod: { gold: 30, industry: 18, manpower: 22 } },
-    { id: 't8', name: 'VIENNA', x: 38, y: 46, w: 14, h: 12, owner: 'enemy', troops: 130, maxTroops: 240, prod: { gold: 40, industry: 25, manpower: 30 } },
+    { id: 't1', name: 'WARSAW', x: 35, y: 20, w: 16, h: 12, owner: 'player', troops: 200, maxTroops: 360, prod: { gold: 50, industry: 30, manpower: 40 }, terrain: 'urban' },
+    { id: 't2', name: 'BERLIN', x: 48, y: 22, w: 18, h: 14, owner: 'enemy', troops: 280, maxTroops: 500, prod: { gold: 80, industry: 60, manpower: 60 }, terrain: 'urban' },
+    { id: 't3', name: 'KÖNIGSBERG', x: 40, y: 10, w: 14, h: 10, owner: 'enemy', troops: 160, maxTroops: 280, prod: { gold: 40, industry: 25, manpower: 32 }, terrain: 'urban' },
+    { id: 't4', name: 'POZNAN', x: 38, y: 28, w: 12, h: 10, owner: 'enemy', troops: 140, maxTroops: 250, prod: { gold: 35, industry: 22, manpower: 28 }, terrain: 'urban' },
+    { id: 't5', name: 'LENINGRAD', x: 20, y: 8, w: 16, h: 12, owner: 'ally', troops: 180, maxTroops: 320, prod: { gold: 55, industry: 35, manpower: 45 }, terrain: 'urban' },
+    { id: 't6', name: 'MINSK', x: 22, y: 24, w: 14, h: 12, owner: 'player', troops: 160, maxTroops: 280, prod: { gold: 45, industry: 28, manpower: 35 }, terrain: 'urban' },
+    { id: 't7', name: 'PRAGUE', x: 42, y: 38, w: 14, h: 12, owner: 'neutral', troops: 80, maxTroops: 180, prod: { gold: 30, industry: 18, manpower: 22 }, terrain: 'urban' },
+    { id: 't8', name: 'VIENNA', x: 38, y: 46, w: 14, h: 12, owner: 'enemy', troops: 130, maxTroops: 240, prod: { gold: 40, industry: 25, manpower: 30 }, terrain: 'urban' },
   ],
 };
 
@@ -1170,7 +1409,7 @@ function renderCampaignList() {
         <div class="mission-desc">${m.year} · ${m.desc}</div>
         <div style="margin-top:4px;display:flex;gap:0.5rem;align-items:center;">
           <div class="mission-difficulty">${Array(5).fill(0).map((_,j)=>`<div class="diff-pip${j<m.difficulty?' filled':''}"></div>`).join('')}</div>
-          <span class="mission-stars" style="font-size:11px;">${stars}</span>
+          <span class="mission-stars" style="font-size:13px;">${stars}</span>
         </div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
@@ -1186,7 +1425,67 @@ function renderCampaignList() {
 function loadMission(mission) {
   G.currentMission = mission;
   G.sandbox = false;
-  initGame(MAP_TEMPLATES[mission.mapKey]);
+  showBriefing(mission);
+}
+
+function showBriefing(m) {
+  const overlay = document.getElementById('briefing-overlay');
+  overlay.classList.add('active');
+
+  document.getElementById('brief-name').textContent = '';
+  document.getElementById('brief-loc').textContent = '';
+  document.getElementById('brief-desc').textContent = '';
+  document.getElementById('brief-intel').textContent = '';
+
+  typeWriter('brief-name', m.name, 0);
+  setTimeout(() => typeWriter('brief-loc', m.mapKey.toUpperCase() + ' SECTOR', 0), 500);
+  setTimeout(() => typeWriter('brief-desc', m.desc, 0), 1200);
+  setTimeout(() => typeWriter('brief-intel', m.intel || 'No additional intel provided.', 0), 2500);
+}
+
+function typeWriter(id, text, i) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (i < text.length) {
+    el.textContent += text.charAt(i);
+    setTimeout(() => typeWriter(id, text, i + 1), 20);
+  }
+}
+
+function startMissionGame() {
+  document.getElementById('briefing-overlay').classList.remove('active');
+  initGame(MAP_TEMPLATES[G.currentMission.mapKey]);
+}
+
+function spawnCombatFX(x, y) {
+  const container = document.getElementById('map-container');
+  const fx = document.createElement('div');
+  fx.className = 'combat-fx';
+  fx.style.left = `${x}%`;
+  fx.style.top = `${y}%`;
+  fx.style.transform = 'translate(-50%, -50%)';
+  container.appendChild(fx);
+  setTimeout(() => fx.remove(), 600);
+}
+
+function spawnHitmarker(x, y) {
+  const container = document.getElementById('map-container');
+  const hm = document.createElement('div');
+  hm.className = 'hitmarker fade';
+  hm.style.left = `${x}%`;
+  hm.style.top = `${y}%`;
+  hm.style.transform = 'translate(-50%, -50%)';
+  container.appendChild(hm);
+  setTimeout(() => hm.remove(), 200);
+}
+
+function showSplash(title, sub) {
+  const overlay = document.getElementById('splash-overlay');
+  if (!overlay) return;
+  document.getElementById('splash-title').textContent = title;
+  document.getElementById('splash-sub').textContent = sub;
+  overlay.classList.add('splash-animate');
+  setTimeout(() => overlay.classList.remove('splash-animate'), 2000);
 }
 
 function startSandbox() {
@@ -1208,9 +1507,86 @@ function showConquest() {
   initGame(MAP_TEMPLATES.eastern);
 }
 
-function showGeneralsMenu() {
+function showOperatorsMenu() {
   renderAcademy();
   openModal('academy-modal');
+}
+
+function showLoadout() {
+  renderLoadoutOp();
+  renderLoadoutPerks();
+  openModal('loadout-modal');
+}
+
+function renderLoadoutOp() {
+  const opId = G.loadout.primaryOperator;
+  const op = OPERATOR_POOL.find(o => o.id === opId) || OPERATOR_POOL[0];
+  document.getElementById('loadout-op-avatar').textContent = op.avatar;
+  document.getElementById('loadout-op-name').textContent = `${op.name} [${op.ability}]`;
+  document.getElementById('loadout-op-skill').textContent = op.skill;
+}
+
+function showLoadoutOpSelect() {
+  const list = document.getElementById('loadout-op-list');
+  list.innerHTML = '';
+
+  // Use G.operators if in game, otherwise just show available in pool (for demo)
+  const available = G.operators.length > 0 ? G.operators : OPERATOR_POOL.slice(0, 2);
+
+  available.forEach(op => {
+    const div = document.createElement('div');
+    div.style.cssText = 'display:flex; gap:1rem; align-items:center; padding:0.6rem; border-bottom:1px solid var(--panel-border); cursor:pointer;';
+    div.innerHTML = `
+      <div style="font-size:2.5rem;">${op.avatar}</div>
+      <div>
+        <div style="font-family:var(--font-display); font-size:1rem;">${op.name}</div>
+        <div style="font-family:var(--font-mono); font-size:9px; color:var(--gold);">${op.skill}</div>
+      </div>
+    `;
+    div.onclick = () => {
+      G.loadout.primaryOperator = op.id;
+      renderLoadoutOp();
+      closeModal('loadout-op-modal');
+    };
+    list.appendChild(div);
+  });
+  openModal('loadout-op-modal');
+}
+
+function renderLoadoutPerks() {
+  const list = document.getElementById('loadout-perks-list');
+  list.innerHTML = '';
+
+  PERK_POOL.forEach(perk => {
+    const active = G.loadout.perks.includes(perk.id);
+    const div = document.createElement('div');
+    div.style.cssText = `
+      padding: 0.5rem; border: 1px solid ${active ? 'var(--gold)' : 'var(--panel-border)'};
+      background: ${active ? 'rgba(212,168,32,0.1)' : 'transparent'};
+      cursor: pointer; position: relative;
+    `;
+    div.innerHTML = `
+      <div style="display:flex; gap:0.4rem; align-items:center; margin-bottom:2px;">
+        <span style="font-size:1.1rem;">${perk.icon}</span>
+        <span style="font-family:var(--font-display); font-size:0.8rem; letter-spacing:0.05em;">${perk.name}</span>
+      </div>
+      <div style="font-family:var(--font-mono); font-size:7px; color:var(--khaki-dark); line-height:1.2;">${perk.desc}</div>
+      ${active ? '<div style="position:absolute; top:2px; right:4px; color:var(--gold); font-size:8px;">✓</div>' : ''}
+    `;
+    div.onclick = () => {
+      if (active) {
+        G.loadout.perks = G.loadout.perks.filter(p => p !== perk.id);
+      } else {
+        if (G.loadout.perks.length >= 3) {
+          notify('MAX 3 PERKS ALLOWED');
+          return;
+        }
+        G.loadout.perks.push(perk.id);
+      }
+      renderLoadoutPerks();
+    };
+    list.appendChild(div);
+  });
 }
 
 function initGame(territoryTemplate) {
@@ -1219,9 +1595,13 @@ function initGame(territoryTemplate) {
   G.phase = 'player';
   G.selectedTerritory = null;
   G.log = [];
-  G.stats = { turns: 0, territoriesCapt: 0, unitsLost: 0, enemiesDefeated: 0 };
+  G.stats = { turns: 0, territoriesCapt: 0, unitsLost: 0, enemiesDefeated: 0, totalKills: 0 };
+  G.currentStreak = 0;
+  G.streakRewards = { uav: false, airstrike: false, nuke: false, flamethrower: false, uavActive: 0, flamethrowerActive: 0 };
+  G.pickups = { speed: 0, invincible: 0, speedActive: 0 };
+  G.perkCharges = { secondLife: 0, wallPhase: 0 };
   G.fortified = {};
-  G.assignedGenerals = {};
+  G.assignedOperators = {};
   G.resources = G.sandbox
     ? { gold: 9999, industry: 9999, manpower: 9999 }
     : { gold: 500, industry: 200, manpower: 300 };
@@ -1230,10 +1610,10 @@ function initGame(territoryTemplate) {
   // Deep copy territories
   G.territories = JSON.parse(JSON.stringify(territoryTemplate));
 
-  // Init generals (player starts with 2 free)
-  G.generals = [
-    { ...GENERAL_POOL[4] }, // Montgomery
-    { ...GENERAL_POOL[5] }, // Patton
+  // Init operators (player starts with 2 free)
+  G.operators = [
+    { ...OPERATOR_POOL[0] }, // SPECTER
+    { ...OPERATOR_POOL[1] }, // ORACLE
   ];
 
   // Calculate income
@@ -1248,9 +1628,10 @@ function initGame(territoryTemplate) {
   // Render
   renderMap();
   renderHUD();
-  renderGenerals();
+  renderOperators();
   renderEconomy();
   renderLog();
+  renderKillstreaks();
 
   // Switch to actions tab
   switchTab('actions');
@@ -1312,12 +1693,15 @@ function renderMap() {
     const hp = Math.round((t.troops / t.maxTroops) * 100);
     const hpClass = hp < 30 ? 'hp low' : 'hp';
 
-    const gen = Object.entries(G.assignedGenerals).find(([tid]) => tid === t.id);
-    const genData = gen ? G.generals.find(g => g.id === gen[1]) : null;
+    const gen = Object.entries(G.assignedOperators).find(([tid]) => tid === t.id);
+    const genData = gen ? G.operators.find(g => g.id === gen[1]) : null;
+
+    const terrainIcons = { urban: '🏢', mountain: '🏔️', desert: '🏜️', jungle: '🌿' };
+    const terrainIcon = terrainIcons[t.terrain] || '';
 
     div.innerHTML = `
-      <div class="terr-name">${t.name}</div>
-      ${genData ? `<div style="font-size:10px;">${genData.avatar}</div>` : ''}
+      <div class="terr-name">${t.name} ${terrainIcon}</div>
+      ${genData ? `<div style="font-size:12px;">${genData.avatar}</div>` : ''}
       <div class="terr-troops">${t.troops}</div>
       <div style="width:80%;margin-top:2px;">
         <div class="prog-bar-wrap" style="height:3px;"><div class="prog-bar ${hpClass}" style="width:${hp}%"></div></div>
@@ -1344,9 +1728,13 @@ function selectTerritory(id) {
   document.getElementById('no-selection').style.display = 'none';
   document.getElementById('territory-info').style.display = 'block';
   document.getElementById('info-name').textContent = t.name;
+  renderKillstreaks();
 
   const ownerLabels = { player: 'YOUR TERRITORY', enemy: 'ENEMY', ally: 'ALLY', neutral: 'NEUTRAL' };
+  const terrainLabels = { urban: 'URBAN', mountain: 'MOUNTAIN', desert: 'DESERT', jungle: 'JUNGLE' };
+
   document.getElementById('info-owner').textContent = ownerLabels[t.owner] || t.owner.toUpperCase();
+  document.getElementById('info-owner').textContent += ` | ${terrainLabels[t.terrain] || 'PLAINS'}`;
   document.getElementById('info-troops').textContent = `${t.troops} TROOPS`;
   document.getElementById('info-prod').textContent = `+${t.prod.gold}G +${t.prod.industry}I`;
 
@@ -1359,14 +1747,18 @@ function selectTerritory(id) {
   const attackBtn = document.getElementById('attack-btn');
   const actionGrid = document.getElementById('action-grid-btns');
 
+  const meleeBtn = document.getElementById('melee-btn');
+
   if (t.owner === 'enemy' || t.owner === 'neutral') {
     attackBtn.style.display = 'block';
+    meleeBtn.style.display = 'block';
     actionGrid.style.display = 'none';
   } else if (t.owner === 'player') {
     attackBtn.style.display = 'none';
     actionGrid.style.display = 'grid';
   } else {
     attackBtn.style.display = 'none';
+    meleeBtn.style.display = 'none';
     actionGrid.style.display = 'none';
   }
 
@@ -1399,19 +1791,95 @@ function initiateAttack() {
   attackPower *= (1 + G.upgrades.infantry * 0.1);
   attackPower *= (1 + G.upgrades.armor * 0.15);
 
-  // General bonus
-  const genId = G.assignedGenerals[attacker.id];
+  const homingBonus = Math.floor(G.stats.totalKills / 10) * 5;
+  attackPower += homingBonus;
+
+  // Operator bonus (Local assigned operator OR Loadout Primary)
+  let genId = G.assignedOperators[attacker.id] || G.loadout.primaryOperator;
   if (genId) {
-    const gen = G.generals.find(g => g.id === genId);
-    if (gen?.bonus?.type === 'attack') attackPower *= (1 + gen.bonus.val);
-    if (gen?.bonus?.type === 'armor') attackPower *= (1 + gen.bonus.val * 0.5);
+    const gen = G.operators.find(g => g.id === genId) || OPERATOR_POOL.find(o => o.id === genId);
+    const perkMult = G.loadout.perks.includes('overkill') ? 1.5 : 1.0;
+    let bonusVal = gen.bonus.val * perkMult;
+
+    // Terrain Synergy: Guerrilla bonus doubled in Jungle
+    if (gen.bonus.type === 'guerrilla' && target.terrain === 'jungle') {
+      bonusVal *= 2;
+      notify('🌿 JUNGLE SYNERGY: GUERRILLA BONUS DOUBLED');
+    }
+
+    if (gen?.bonus?.type === 'attack') attackPower *= (1 + bonusVal);
+    if (gen?.bonus?.type === 'armor') attackPower *= (1 + bonusVal * 0.5);
+    if (gen?.bonus?.type === 'guerrilla') attackPower *= (1 + bonusVal);
+    if (gen?.bonus?.type === 'melee') attackPower *= (1 + bonusVal * 0.5);
+
+    // Special Shooter (Crit)
+    if (gen?.bonus?.type === 'crit') {
+      if (Math.random() < bonusVal) {
+        attackPower *= 2.0;
+        notify('🎯 CRITICAL HIT! SPECIAL SHOOTER ACTIVE');
+      }
+    }
+
+    // Desert Veteran
+    if (gen?.bonus?.type === 'desertAtk' && target.terrain === 'desert') {
+       attackPower *= (1 + bonusVal);
+       notify('🏜️ DESERT SYNERGY: COMBAT BONUS');
+    }
   }
 
-  // Fortification bonus for defense
-  if (G.fortified[target.id]) defensePower *= 1.35;
+  // Hard Breacher (Sledge) - Ignores all defenses
+  if (genId) {
+    const gen = G.operators.find(g => g.id === genId);
+    if (gen?.bonus?.type === 'breach') {
+       defensePower = target.troops; // Reset to base, ignore bonuses
+       notify('🔨 HARD BREACHER: DEFENSES NEUTRALIZED');
+    }
+  }
+
+  // Shrapnel Perk (+20% global attack)
+  if (G.loadout.perks.includes('shrapnel')) {
+    attackPower *= 1.2;
+  }
+
+  // Terrain & Fortification bonus (Wall Phase Perk bypasses)
+  let defensiveBonus = 1.0;
+  if (G.fortified[target.id]) defensiveBonus += 0.35;
+  if (target.terrain === 'mountain') defensiveBonus += 0.4;
+  if (target.terrain === 'urban') defensiveBonus += 0.15;
+  if (target.terrain === 'jungle') defensiveBonus += 0.25;
+
+  if (defensiveBonus > 1.0) {
+    if (G.rank >= 15 && G.perkCharges.wallPhase > 0) {
+      G.perkCharges.wallPhase--;
+      notify('👻 PERK: WALL PHASE! DEFENSES BYPASSED');
+      addLog('good', 'WALL PHASE', `Bypassed terrain/defenses at ${target.name}`);
+    } else {
+      defensePower *= defensiveBonus;
+    }
+  }
 
   // Defense upgrade
   defensePower *= (1 + G.upgrades.infantry * 0.08);
+
+  // Flamethrower Active Ability
+  if (G.streakRewards.flamethrowerActive > 0) {
+    attackPower *= 3;
+    G.streakRewards.flamethrowerActive--;
+    notify('🔥 FLAMETHROWER ENGAGED! 3X DAMAGE');
+    addLog('good', 'FLAMETHROWER', `Burning through defenses at ${target.name}`);
+  }
+
+  // Invincibility Pickup
+  if (G.pickups.invincible > 0) {
+    G.pickups.invincible--;
+    defensePower = 0; // No defense power against invincible attacker = zero losses
+    notify('🛡️ PICKUP: INVINCIBILITY ACTIVE! NO LOSSES');
+  }
+
+  // UAV Bonus
+  if (G.streakRewards.uavActive > 0) {
+    attackPower *= 1.15;
+  }
 
   // Random battle variance (±15%) — enemy does NOT cheat
   const playerRoll = 0.85 + Math.random() * 0.3;
@@ -1429,6 +1897,15 @@ function initiateAttack() {
 
   G.stats.unitsLost += attackerLosses;
 
+  // Random Pickups Drop (Scavenger Perk increases chance)
+  const dropChance = G.loadout.perks.includes('scavenger') ? 0.3 : 0.1;
+  if (Math.random() < dropChance) {
+    const pType = Math.random() < 0.5 ? 'speed' : 'invincible';
+    G.pickups[pType] = (G.pickups[pType] || 0) + 1;
+    notify(`🎁 CRATE DROPPED: ${pType.toUpperCase()} SECURED`);
+    addLog('good', 'PICKUP', `Secured ${pType} from the field`);
+  }
+
   // Determine outcome
   let victory = false;
   if (attackPower > defensePower || target.troops <= 0) {
@@ -1438,18 +1915,33 @@ function initiateAttack() {
     target.troops = captureTroops;
     target.owner = 'player';
     G.stats.territoriesCapt++;
-    G.stats.enemiesDefeated += Math.floor(defenderLosses * 0.7);
+    const kills = Math.floor(defenderLosses * 0.7);
+    G.stats.enemiesDefeated += kills;
+    updateKills(kills);
 
     // Clear fortification
     delete G.fortified[target.id];
     addLog('good', 'CAPTURED', target.name);
   } else {
     addLog('enemy', 'REPULSED', `Attack on ${target.name} failed`);
+    G.currentStreak = 0; // Reset streak on fail
+
+    // Second life
+    if (G.perkCharges.secondLife > 0 && attacker.troops < 20) {
+       G.perkCharges.secondLife--;
+       attacker.troops = Math.floor(attacker.maxTroops * 0.5);
+       notify('♥️ PERK: SECOND LIFE TRIGGERED! TROOPS REPLENISHED');
+       addLog('good', 'SECOND LIFE', `Forces at ${attacker.name} reinforced`);
+    }
   }
 
   // Show damage pops
   showDamagePop(target, `-${defenderLosses}`, 'enemy');
   showDamagePop(attacker, `-${attackerLosses}`, 'player');
+
+  // Tactical FX
+  spawnCombatFX(target.x + target.w/2, target.y + target.h/2);
+  spawnHitmarker(target.x + target.w/2, target.y + target.h/2);
 
   // Battle modal
   const icon = victory ? '🏆' : '💀';
@@ -1465,6 +1957,98 @@ function initiateAttack() {
 
   openModal('battle-modal');
 
+  renderMap();
+}
+
+function meleeAttack() {
+  const target = G.selectedTerritory;
+  if (!target || (target.owner !== 'enemy' && target.owner !== 'neutral')) return;
+
+  const playerTerrs = G.territories.filter(t => t.owner === 'player');
+  if (playerTerrs.length === 0) return;
+
+  const attacker = playerTerrs.reduce((a, b) => a.troops > b.troops ? a : b);
+
+  // Melee: High damage, high risk
+  let attackPower = attacker.troops * 1.8; // 80% bonus base
+  let defensePower = target.troops * 1.5; // Enemy reacts strongly to melee
+
+  // Operator bonus (Local OR Loadout Primary)
+  const homingBonus = Math.floor(G.stats.totalKills / 10) * 5;
+  attackPower += homingBonus;
+  let genId = G.assignedOperators[attacker.id] || G.loadout.primaryOperator;
+  if (genId) {
+    const gen = G.operators.find(g => g.id === genId) || OPERATOR_POOL.find(o => o.id === genId);
+    const perkMult = G.loadout.perks.includes('overkill') ? 1.5 : 1.0;
+    let bonusVal = gen.bonus.val * perkMult;
+
+    // Terrain Synergy: Melee bonus doubled in Urban (CQB)
+    if (gen.bonus.type === 'melee' && target.terrain === 'urban') {
+      bonusVal *= 2;
+      notify('🏢 URBAN SYNERGY: MELEE BONUS DOUBLED');
+    }
+
+    if (gen?.bonus?.type === 'melee') attackPower *= (1 + bonusVal);
+    if (gen?.bonus?.type === 'attack') attackPower *= (1 + bonusVal * 0.5);
+  }
+
+  const playerRoll = 0.7 + Math.random() * 0.6; // Higher variance
+  const enemyRoll = 0.8 + Math.random() * 0.4;
+
+  attackPower *= playerRoll;
+  defensePower *= enemyRoll;
+
+  // Losses are higher in melee
+  const attackerLosses = Math.floor(defensePower * 0.45 * (0.5 + Math.random() * 0.5));
+  const defenderLosses = Math.floor(attackPower * 0.6 * (0.5 + Math.random() * 0.5));
+
+  attacker.troops = Math.max(5, attacker.troops - attackerLosses);
+  target.troops = Math.max(0, target.troops - defenderLosses);
+
+  G.stats.unitsLost += attackerLosses;
+
+  let victory = false;
+  if (attackPower > defensePower || target.troops <= 0) {
+    victory = true;
+    const captureTroops = Math.max(15, Math.floor(attacker.troops * 0.5));
+    attacker.troops = Math.max(5, attacker.troops - captureTroops);
+    target.troops = captureTroops;
+    target.owner = 'player';
+    G.stats.territoriesCapt++;
+    const kills = Math.floor(defenderLosses * 0.8);
+    G.stats.enemiesDefeated += kills;
+    updateKills(kills);
+    delete G.fortified[target.id];
+    addLog('good', 'MELEE VICTORY', target.name);
+  } else {
+    addLog('enemy', 'MELEE FAILED', `Failed to breach ${target.name}`);
+    G.currentStreak = 0;
+
+    // Second life
+    if (G.perkCharges.secondLife > 0 && attacker.troops < 20) {
+       G.perkCharges.secondLife--;
+       attacker.troops = Math.floor(attacker.maxTroops * 0.5);
+       notify('♥️ PERK: SECOND LIFE TRIGGERED! TROOPS REPLENISHED');
+       addLog('good', 'SECOND LIFE', `Forces at ${attacker.name} reinforced`);
+    }
+  }
+
+  showDamagePop(target, `-${defenderLosses}`, 'enemy');
+  showDamagePop(attacker, `-${attackerLosses}`, 'player');
+  spawnCombatFX(target.x + target.w/2, target.y + target.h/2);
+  spawnHitmarker(target.x + target.w/2, target.y + target.h/2);
+
+  const titleEl = document.getElementById('result-title');
+  titleEl.textContent = victory ? 'MELEE SUCCESS' : 'MELEE REPULSED';
+  titleEl.className = `result-title ${victory ? 'victory' : 'defeat'}`;
+  document.getElementById('result-icon').textContent = '🔪';
+  document.getElementById('result-detail').innerHTML =
+    `CQB ENGAGEMENT: ${target.name}<br>` +
+    `ENEMY LOSSES: ${defenderLosses} (HIGH)<br>` +
+    `YOUR LOSSES: ${attackerLosses} (HIGH)<br>` +
+    `${victory ? '✓ Objective secured via melee' : '✗ Brutal counter-attack forced retreat'}`;
+
+  openModal('battle-modal');
   renderMap();
   renderHUD();
   updateTerritoryInfo();
@@ -1552,6 +2136,33 @@ function runEnemyAI() {
       const enemyPower = enemy.troops * (0.8 + Math.random() * 0.3);
       let defPower = target.troops * (0.8 + Math.random() * 0.3);
 
+      // Ghost Perk protection
+      if (target.owner === 'player' && G.loadout.perks.includes('ghost')) {
+        if (Math.random() < 0.2) {
+          addLog('good', 'GHOST', `Enemy intelligence failed to locate forces at ${target.name}`);
+          return;
+        }
+      }
+
+      // Ghost Strike (Mamba) - Invisible in Jungle
+      const defOpId = G.assignedOperators[target.id];
+      if (defOpId) {
+         const defOp = G.operators.find(o => o.id === defOpId);
+         if (defOp?.bonus?.type === 'stealth' && target.terrain === 'jungle') {
+            addLog('good', 'GHOST STRIKE', `Enemy missed ${target.name} in the dense jungle.`);
+            return;
+         }
+      }
+
+      // Signal Jammer (Jade) - Reduce enemy attack
+      if (defOpId) {
+         const defOp = G.operators.find(o => o.id === defOpId);
+         if (defOp?.bonus?.type === 'jam') {
+            enemyPower *= (1 - defOp.bonus.val);
+            notify('💠 SIGNAL JAMMER: ENEMY ATTACK REDUCED');
+         }
+      }
+
       if (G.fortified[target.id]) defPower *= 1.35;
 
       const enemyLosses = Math.floor(defPower * 0.22);
@@ -1598,7 +2209,19 @@ function endTurn() {
 
     // Collect income
     collectIncome();
+    if (G.pickups.speedActive > 0) {
+      G.pickups.speedActive--;
+      collectIncome(); // Double income
+      notify('⚡ SPEED BONUS: EXTRA INCOME COLLECTED');
+    }
     calcIncome();
+
+    // Killstreak turn-downs
+    if (G.streakRewards.uavActive > 0) G.streakRewards.uavActive--;
+    renderKillstreaks();
+
+  // Wall phase charges (1 per turn if level 15)
+  if (G.rank >= 15) G.perkCharges.wallPhase = 1;
 
     G.phase = 'player';
     G.selectedTerritory = null;
@@ -1618,9 +2241,12 @@ function endTurn() {
 function collectIncome() {
   const logisticsMult = 1 + G.upgrades.logistics * 0.08;
   G.territories.filter(t => t.owner === 'player').forEach(t => {
-    G.resources.gold += Math.floor(t.prod.gold * logisticsMult);
+    let terrainMult = 1.0;
+    if (t.terrain === 'urban') terrainMult = 1.25; // 25% manpower/gold bonus in urban
+
+    G.resources.gold += Math.floor(t.prod.gold * logisticsMult * (t.terrain === 'urban' ? 1.2 : 1.0));
     G.resources.industry += Math.floor(t.prod.industry * logisticsMult);
-    G.resources.manpower += Math.floor(t.prod.manpower * logisticsMult);
+    G.resources.manpower += Math.floor(t.prod.manpower * logisticsMult * terrainMult);
   });
 
   // Sandbox: keep resources maxed
@@ -1631,9 +2257,12 @@ function calcIncome() {
   const mult = 1 + G.upgrades.logistics * 0.08;
   G.resourceIncome = { gold: 0, industry: 0, manpower: 0 };
   G.territories.filter(t => t.owner === 'player').forEach(t => {
-    G.resourceIncome.gold += Math.floor(t.prod.gold * mult);
+    let terrainMult = 1.0;
+    if (t.terrain === 'urban') terrainMult = 1.25;
+
+    G.resourceIncome.gold += Math.floor(t.prod.gold * mult * (t.terrain === 'urban' ? 1.2 : 1.0));
     G.resourceIncome.industry += Math.floor(t.prod.industry * mult);
-    G.resourceIncome.manpower += Math.floor(t.prod.manpower * mult);
+    G.resourceIncome.manpower += Math.floor(t.prod.manpower * mult * terrainMult);
   });
 }
 
@@ -1648,27 +2277,38 @@ function recruitTroops() {
   grid.innerHTML = '';
   document.getElementById('recruit-subtitle').textContent = `DEPLOYING TO: ${t.name}`;
 
+  // Supplies Master Ability: Local OR Loadout Primary
+  let discount = 1.0;
+  const opId = G.assignedOperators[t.id] || G.loadout.primaryOperator;
+  if (opId) {
+    const op = G.operators.find(o => o.id === opId) || OPERATOR_POOL.find(o => o.id === opId);
+    if (op?.bonus?.type === 'supplies') discount = (1 - op.bonus.val);
+  }
+
   UNIT_TYPES.forEach(unit => {
-    const canAfford = Object.entries(unit.cost).every(([res, amt]) => G.resources[res] >= amt);
+    const actualCost = {};
+    Object.entries(unit.cost).forEach(([res, amt]) => actualCost[res] = Math.floor(amt * discount));
+
+    const canAfford = Object.entries(actualCost).every(([res, amt]) => G.resources[res] >= amt);
     const div = document.createElement('div');
     div.className = `recruit-card${!canAfford ? ' locked' : ''}`;
     div.style.opacity = canAfford ? '1' : '0.5';
     div.innerHTML = `
       <span class="icon">${unit.icon}</span>
       <div class="name">${unit.name}</div>
-      <div class="cost">${Object.entries(unit.cost).map(([r,a])=>`${a}${r[0].toUpperCase()}`).join(' ')}</div>
-      <div class="stat">ATK ${unit.attack} DEF ${unit.defense}</div>
+      <div class="cost">${Object.entries(actualCost).map(([r,a])=>`${a}${r[0].toUpperCase()}`).join(' ')}</div>
+      <div class="stat">ATK ${unit.attack} DEF ${unit.defense} ${discount < 1 ? '<span style="color:var(--gold);">[DISCOUNT]</span>' : ''}</div>
     `;
-    if (canAfford) div.onclick = () => doRecruit(unit, t);
+    if (canAfford) div.onclick = () => doRecruit(unit, t, actualCost);
     grid.appendChild(div);
   });
 
   openModal('recruit-modal');
 }
 
-function doRecruit(unit, t) {
+function doRecruit(unit, t, cost) {
   // Deduct cost
-  Object.entries(unit.cost).forEach(([res, amt]) => G.resources[res] -= amt);
+  Object.entries(cost).forEach(([res, amt]) => G.resources[res] -= amt);
 
   // Add troops
   const troopsAdded = Math.floor(30 + Math.random() * 20);
@@ -1729,41 +2369,42 @@ function doUpgrade(id, cost) {
   addLog('good', 'UPGRADE', `${id.toUpperCase()} tech level ${G.upgrades[id]}`);
 }
 
-function assignGeneral() {
+function assignOperator() {
   const t = G.selectedTerritory;
   if (!t || t.owner !== 'player') return;
 
-  const list = document.getElementById('general-assign-list');
+  const list = document.getElementById('operator-assign-list');
   list.innerHTML = '';
 
-  if (G.generals.length === 0) {
-    list.innerHTML = '<div style="font-family:var(--font-mono);font-size:10px;color:var(--khaki-dark);padding:0.5rem;">No generals available. Visit the Academy.</div>';
+  if (G.operators.length === 0) {
+    list.innerHTML = '<div style="font-family:var(--font-mono);font-size:12px;color:var(--khaki-dark);padding:0.5rem;">No operators available. Visit the Academy.</div>';
   }
 
-  G.generals.forEach(gen => {
-    const isAssigned = G.assignedGenerals[t.id] === gen.id;
+  G.operators.forEach(gen => {
+    const isAssigned = G.assignedOperators[t.id] === gen.id;
     const div = document.createElement('div');
-    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(200,185,122,0.1);cursor:pointer;';
+    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.8rem 0;border-bottom:1px solid rgba(200,185,122,0.1);cursor:pointer;';
     div.innerHTML = `
       <div style="font-size:1.8rem;flex-shrink:0;">${gen.avatar}</div>
       <div style="flex:1;">
         <div style="font-family:var(--font-display);font-size:0.9rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
-        <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold);">${gen.skill}</div>
-        <div style="color:var(--gold);font-size:11px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold); font-weight:700;">${gen.ability}: ${gen.skill}</div>
+        <div style="font-family:var(--font-body);font-size:12px;color:var(--cream-dark);font-style:italic;margin:2px 0;">${gen.bio}</div>
+        <div style="color:var(--gold);font-size:13px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
       </div>
       <button style="padding:0.3rem 0.6rem;background:${isAssigned?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${isAssigned?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;">${isAssigned?'ASSIGNED':'ASSIGN'}</button>
     `;
     div.onclick = () => {
-      G.assignedGenerals[t.id] = gen.id;
-      closeModal('general-modal');
+      G.assignedOperators[t.id] = gen.id;
+      closeModal('operator-modal');
       renderMap();
-      addLog('good', 'GENERAL', `${gen.name} assigned to ${t.name}`);
+      addLog('good', 'OPERATOR', `${gen.name} assigned to ${t.name}`);
       notify(`★ ${gen.name} assigned to ${t.name}`);
     };
     list.appendChild(div);
   });
 
-  openModal('general-modal');
+  openModal('operator-modal');
 }
 
 function fortify() {
@@ -1793,29 +2434,30 @@ function fortify() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// GENERALS ACADEMY (Earnable, not just pay-to-win)
+// OPERATORS ACADEMY (Earnable, not just pay-to-win)
 // ═══════════════════════════════════════════════════════════════════════════════
 function renderAcademy() {
   const list = document.getElementById('academy-list');
   list.innerHTML = '';
 
-  GENERAL_POOL.forEach(gen => {
-    const owned = G.generals.some(g => g.id === gen.id);
+  OPERATOR_POOL.forEach(gen => {
+    const owned = G.operators.some(g => g.id === gen.id);
     const canAfford = G.resources.gold >= gen.cost;
 
     const div = document.createElement('div');
-    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid rgba(200,185,122,0.1);';
+    div.style.cssText = 'display:flex;gap:0.75rem;align-items:center;padding:0.8rem 0;border-bottom:1px solid rgba(200,185,122,0.1);';
     div.innerHTML = `
-      <div style="font-size:2rem;flex-shrink:0;">${gen.avatar}</div>
+      <div style="font-size:2.5rem;flex-shrink:0;">${gen.avatar}</div>
       <div style="flex:1;">
-        <div style="font-family:var(--font-display);font-size:0.95rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
-        <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold);">${gen.skill}</div>
-        <div style="color:var(--gold);font-size:11px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
+        <div style="font-family:var(--font-display);font-size:1.15rem;letter-spacing:0.05em;">${gen.nation} ${gen.name}</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--gold); font-weight:700;">${gen.ability}: ${gen.skill}</div>
+        <div style="font-family:var(--font-body);font-size:12px;color:var(--cream-dark);font-style:italic;margin:2px 0;">"${gen.bio}"</div>
+        <div style="color:var(--gold);font-size:13px;">${'★'.repeat(gen.stars)}${'☆'.repeat(5-gen.stars)}</div>
       </div>
       <div style="text-align:right;flex-shrink:0;">
         ${owned
           ? '<div style="font-family:var(--font-mono);font-size:9px;color:var(--success);">ENLISTED</div>'
-          : `<button onclick="hireGeneral('${gen.id}')" style="padding:0.35rem 0.6rem;background:${canAfford?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${canAfford?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;opacity:${canAfford?1:0.5};">${gen.cost}G</button>`
+          : `<button onclick="hireOperator('${gen.id}')" style="padding:0.6rem 1rem;background:${canAfford?'var(--khaki)':'transparent'};border:1px solid var(--khaki);color:${canAfford?'var(--olive-dark)':'var(--khaki)'};font-family:var(--font-mono);font-size:9px;cursor:pointer;opacity:${canAfford?1:0.5};">${gen.cost}G</button>`
         }
       </div>
     `;
@@ -1823,17 +2465,17 @@ function renderAcademy() {
   });
 }
 
-function hireGeneral(id) {
-  const gen = GENERAL_POOL.find(g => g.id === id);
+function hireOperator(id) {
+  const gen = OPERATOR_POOL.find(g => g.id === id);
   if (!gen) return;
   if (G.resources.gold < gen.cost) { notify('⚠ Insufficient gold'); return; }
-  if (G.generals.some(g => g.id === id)) { notify('Already enlisted'); return; }
+  if (G.operators.some(g => g.id === id)) { notify('Already enlisted'); return; }
 
   G.resources.gold -= gen.cost;
-  G.generals.push({ ...gen });
+  G.operators.push({ ...gen });
   renderHUD();
   renderAcademy();
-  renderGenerals();
+  renderOperators();
   addLog('good', 'HIRED', `${gen.name} joined your command`);
   notify(`★ ${gen.name} enlisted!`);
 }
@@ -1841,6 +2483,149 @@ function hireGeneral(id) {
 // ═══════════════════════════════════════════════════════════════════════════════
 // WIN / LOSE CONDITIONS
 // ═══════════════════════════════════════════════════════════════════════════════
+function updateKills(kills) {
+  G.stats.totalKills += kills;
+
+  // Airstrike Coordinator (Valkyrie) - Streaks count for more
+  let streakGained = kills;
+
+  // Check Loadout Primary first
+  const primaryOp = G.operators.find(o => o.id === G.loadout.primaryOperator) || OPERATOR_POOL.find(o => o.id === G.loadout.primaryOperator);
+  if (primaryOp?.bonus?.type === 'streaks') {
+    streakGained = Math.ceil(kills * (1 + primaryOp.bonus.val));
+  } else {
+    // Check assigned operators
+    const playerTerrs = G.territories.filter(t => t.owner === 'player');
+    for (let pt of playerTerrs) {
+      const opId = G.assignedOperators[pt.id];
+      if (opId) {
+        const op = G.operators.find(o => o.id === opId);
+        if (op?.bonus?.type === 'streaks') {
+          streakGained = Math.ceil(kills * (1 + op.bonus.val));
+          break;
+        }
+      }
+    }
+  }
+
+  G.currentStreak += streakGained;
+  renderKillstreaks();
+
+  // Perks
+  if (G.stats.totalKills % 10 < (G.stats.totalKills - kills) % 10 || G.stats.totalKills >= (Math.floor((G.stats.totalKills - kills)/10) + 1) * 10) {
+     // Triggered every 10 kills
+     notify('🎯 PERK: HOMING BULLETS ACTIVATED (+5 ATK)');
+  }
+
+  if (G.stats.totalKills >= 25 && Math.floor(G.stats.totalKills/25) > Math.floor((G.stats.totalKills - kills)/25)) {
+    G.perkCharges.secondLife++;
+    notify('♥️ PERK: SECOND LIFE CHARGED');
+  }
+
+  // Killstreaks (Hardline Perk reduces costs)
+  const streakMult = G.loadout.perks.includes('hardline') ? 0.9 : 1.0;
+  if (G.currentStreak >= Math.ceil(3 * streakMult) && !G.streakRewards.uav) {
+    G.streakRewards.uav = true;
+    showSplash('KILLSTREAK', 'UAV RECON READY');
+  }
+  if (G.currentStreak >= Math.ceil(5 * streakMult) && !G.streakRewards.airstrike) {
+    G.streakRewards.airstrike = true;
+    showSplash('KILLSTREAK', 'AIRSTRIKE READY');
+  }
+  if (G.currentStreak >= Math.ceil(15 * streakMult) && !G.streakRewards.nuke) {
+    G.streakRewards.nuke = true;
+    showSplash('TACTICAL NUKE', 'READY FOR LAUNCH');
+  }
+  if (G.currentStreak >= Math.ceil(30 * streakMult) && !G.streakRewards.flamethrower) {
+    G.streakRewards.flamethrower = true;
+    showSplash('KILLSTREAK', 'FLAMETHROWER READY');
+  }
+
+  // Rank / XP progression (Simple COD-style leveling)
+  const xpGained = kills * 10;
+  G.xp += xpGained;
+  if (G.xp >= G.rank * 1000) {
+    G.rank++;
+    showSplash('RANK UP', `PROMOTED TO RANK ${G.rank}`);
+    addLog('good', 'RANK UP', `Promoted to Rank ${G.rank}`);
+    if (G.rank === 15) notify('🔓 UNLOCKED: WALL PHASE PERK');
+    renderHUD();
+  }
+  renderHUD();
+}
+
+function renderKillstreaks() {
+  const container = document.getElementById('killstreak-container');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const streaks = [
+    { id: 'uav', icon: '📡', label: 'UAV', color: '#60a0f0' },
+    { id: 'airstrike', icon: '🛩️', label: 'AIR', color: '#f06060' },
+    { id: 'flamethrower', icon: '🔥', label: 'FIRE', color: '#f0a040' },
+    { id: 'nuke', icon: '☢️', label: 'NUKE', color: '#f0f040' }
+  ];
+
+  streaks.forEach(s => {
+    if (G.streakRewards[s.id]) {
+      const btn = document.createElement('button');
+      btn.style.cssText = `padding:4px 8px; background:rgba(0,0,0,0.4); border:1px solid ${s.color}; color:${s.color}; font-family:var(--font-mono); font-size:9px; cursor:pointer; flex-shrink:0;`;
+      btn.innerHTML = `${s.icon} ${s.label}`;
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        useKillstreak(s.id);
+      };
+      container.appendChild(btn);
+    }
+  });
+
+  // Pickups
+  if (G.pickups.speed > 0) {
+    const btn = document.createElement('button');
+    btn.style.cssText = `padding:4px 8px; background:rgba(0,0,0,0.4); border:1px solid #40f0a0; color:#40f0a0; font-family:var(--font-mono); font-size:9px; cursor:pointer; flex-shrink:0;`;
+    btn.innerHTML = `⚡ SPEED x${G.pickups.speed}`;
+    btn.onclick = () => { G.pickups.speed--; G.pickups.speedActive = 2; notify('⚡ SPEED ACTIVE: DOUBLE INCOME NEXT TURN'); renderKillstreaks(); };
+    container.appendChild(btn);
+  }
+}
+
+function useKillstreak(id) {
+  if (id === 'uav') {
+    G.streakRewards.uav = false;
+    G.streakRewards.uavActive = 3;
+    notify('📡 UAV IN THE AIR. INTEL SECURED (+15% ATK)');
+    addLog('good', 'UAV', 'Satellite surveillance active for 3 turns');
+  } else if (id === 'airstrike') {
+    const target = G.selectedTerritory;
+    if (!target || target.owner === 'player') { notify('SELECT ENEMY TARGET FOR AIRSTRIKE'); return; }
+    G.streakRewards.airstrike = false;
+
+    // Flak Jacket protection
+    let flakMult = 1.0;
+    if (target.owner === 'player' && G.loadout.perks.includes('flak')) flakMult = 0.6;
+    // (Note: airstrike usually targets enemy, but this logic is here for completeness if enemy gets airstrikes)
+
+    const damage = Math.floor(target.troops * 0.4 * flakMult);
+    target.troops -= damage;
+    notify(`🛩️ AIRSTRIKE HIT ${target.name} (-${damage})`);
+    addLog('good', 'AIRSTRIKE', `Devastating strike on ${target.name}`);
+    spawnCombatFX(target.x + target.w/2, target.y + target.h/2);
+    updateTerritoryInfo();
+  } else if (id === 'flamethrower') {
+    G.streakRewards.flamethrower = false;
+    G.streakRewards.flamethrowerActive = 2;
+    notify('🔥 FLAMETHROWER EQUIPPED (Next 2 attacks 3x damage)');
+  } else if (id === 'nuke') {
+    if (!confirm('LAUNCH TACTICAL NUKE? THIS WILL END THE OPERATION.')) return;
+    G.streakRewards.nuke = false;
+    G.territories.forEach(t => { if(t.owner !== 'player' && t.owner !== 'ally') t.troops = 1; });
+    notify('☢️ TACTICAL NUKE INBOUND. ALL RESISTANCE NEUTRALIZED.');
+    addLog('danger', 'NUKE', 'Operation ended via nuclear deterrent.');
+    checkWinCondition();
+  }
+  renderKillstreaks();
+}
+
 function checkWinCondition() {
   const enemyTerrs = G.territories.filter(t => t.owner === 'enemy');
   if (enemyTerrs.length === 0) {
@@ -1888,27 +2673,87 @@ function renderHUD() {
   document.getElementById('hud-industry').textContent = G.resources.industry.toLocaleString();
   document.getElementById('hud-manpower').textContent = G.resources.manpower.toLocaleString();
   document.getElementById('hud-turn-num').textContent = `TURN ${G.turn}`;
+
+  const nameEl = document.getElementById('hud-player-name');
+  if (nameEl) {
+    const primaryOp = OPERATOR_POOL.find(o => o.id === G.loadout.primaryOperator);
+    nameEl.innerHTML = `${G.playerName.toUpperCase()} <span style="font-size:9px; color:var(--khaki-dark); opacity:0.8;">[${primaryOp?.avatar || ''}]</span>`;
+  }
+
+  const rankLabel = document.getElementById('hud-rank-label');
+  if (rankLabel) rankLabel.textContent = `RANK ${G.rank}`;
+
+  const perkEl = document.getElementById('hud-perks');
+  if (perkEl) {
+    perkEl.innerHTML = G.loadout.perks.map(pid => {
+      const p = PERK_POOL.find(x => x.id === pid);
+      return `<span style="font-size:12px;" title="${p?.name}">${p?.icon || ''}</span>`;
+    }).join('');
+
+    // Add XP bar mini
+    const nextRankXp = G.rank * 1000;
+    const prevRankXp = (G.rank - 1) * 1000;
+    const progress = ((G.xp - prevRankXp) / (nextRankXp - prevRankXp)) * 100;
+    const bar = document.createElement('div');
+    bar.className = 'prog-bar-wrap';
+    bar.style.cssText = 'height:2px; width:40px; margin-top:2px;';
+    bar.innerHTML = `<div class="prog-bar" style="width:${Math.min(100, progress)}%; background:var(--gold);"></div>`;
+    perkEl.appendChild(bar);
+  }
 }
 
-function renderGenerals() {
-  const scroll = document.getElementById('generals-scroll');
+function submitPlayerName() {
+  const input = document.getElementById('player-name-input');
+  const error = document.getElementById('name-error');
+  const val = input.value.trim();
+
+  if (!val) { error.textContent = 'CALLSIGN REQUIRED'; return; }
+  if (val.length < 3) { error.textContent = 'MINIMUM 3 CHARACTERS'; return; }
+
+  if (!validateName(val)) {
+    error.textContent = 'CALLSIGN CONTAINS RESTRICTED LANGUAGE';
+    return;
+  }
+
+  G.playerName = val;
+  showScreen('title-screen');
+}
+
+function validateName(name) {
+  const forbidden = [
+    'fuck', 'shit', 'piss', 'cunt', 'dick', 'cock', 'pussy', 'slut', 'whore',
+    'nigger', 'faggot', 'retard', 'porn', 'sex', 'sexy', 'rape'
+  ];
+  const lower = name.toLowerCase();
+  for (let word of forbidden) {
+    if (lower.includes(word)) return false;
+  }
+  // Also check for sexually explicit themes via regex
+  const explicitRegex = /(s[e3]x|p[o0]rn|v[i1]ag|cl[i1]t|pen[i1]s|anal|asshole)/i;
+  if (explicitRegex.test(name)) return false;
+
+  return true;
+}
+
+function renderOperators() {
+  const scroll = document.getElementById('operators-scroll');
   scroll.innerHTML = '';
-  G.generals.forEach(gen => {
+  G.operators.forEach(gen => {
     const div = document.createElement('div');
-    const isAssigned = Object.values(G.assignedGenerals).includes(gen.id);
-    div.className = `general-card${isAssigned?' assigned':''}`;
+    const isAssigned = Object.values(G.assignedOperators).includes(gen.id);
+    div.className = `operator-card${isAssigned?' assigned':''}`;
     div.innerHTML = `
-      <div class="general-level">L${gen.level}</div>
-      <span class="general-avatar">${gen.avatar}</span>
-      <div class="general-name">${gen.nation}<br>${gen.name}</div>
-      <div class="general-stars">${'★'.repeat(gen.stars)}</div>
+      <div class="operator-level">L${gen.level}</div>
+      <span class="operator-avatar">${gen.avatar}</span>
+      <div class="operator-name">${gen.nation}<br>${gen.name}</div>
+      <div class="operator-stars">${'★'.repeat(gen.stars)}</div>
       <div style="font-family:var(--font-mono);font-size:7px;color:var(--khaki-dark);margin-top:2px;">${gen.skill.split(' ').slice(0,2).join(' ')}</div>
     `;
     scroll.appendChild(div);
   });
 
-  if (G.generals.length === 0) {
-    scroll.innerHTML = '<div style="font-family:var(--font-mono);font-size:9px;color:var(--khaki-dark);padding:0.4rem;">No generals. Visit Academy from title screen.</div>';
+  if (G.operators.length === 0) {
+    scroll.innerHTML = '<div style="font-family:var(--font-mono);font-size:9px;color:var(--khaki-dark);padding:0.4rem;">No operators. Visit Academy from title screen.</div>';
   }
 }
 
@@ -1968,14 +2813,14 @@ function updateTerritoryInfo() {
 // ═══════════════════════════════════════════════════════════════════════════════
 function switchTab(name) {
   document.querySelectorAll('.panel-tab').forEach((t, i) => {
-    const tabs = ['actions','generals','economy','log'];
+    const tabs = ['actions','operators','economy','log'];
     t.classList.toggle('active', tabs[i] === name);
   });
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
   document.getElementById(`tab-${name}`).classList.add('active');
 
   if (name === 'economy') renderEconomy();
-  if (name === 'generals') renderGenerals();
+  if (name === 'operators') renderOperators();
   if (name === 'log') renderLog();
 }
 
@@ -2016,7 +2861,7 @@ async function fetchAIAdvice() {
     playerTerritories: playerTerrs.map(t => ({ name: t.name, troops: t.troops, maxTroops: t.maxTroops, fortified: !!G.fortified[t.id] })),
     enemyTerritories: enemyTerrs.map(t => ({ name: t.name, troops: t.troops })),
     allyTerritories: allyTerrs.map(t => ({ name: t.name, troops: t.troops })),
-    generals: G.generals.map(g => g.name),
+    operators: G.operators.map(g => g.name),
     mission: G.currentMission?.name || 'SANDBOX',
     sandbox: G.sandbox,
   };
@@ -2028,7 +2873,7 @@ async function fetchAIAdvice() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 1000,
-        system: `You are an elite WW2 military strategist AI co-pilot named IRON. Give concise, specific battlefield advice in 2-4 sentences. Use military language but keep it readable. Focus on the most actionable recommendation given the current state. Don't list everything — pick the ONE most important move. Speak like a general, not a chatbot.`,
+        system: `You are an elite WW2 military strategist AI co-pilot named IRON. Give concise, specific battlefield advice in 2-4 sentences. Use military language but keep it readable. Focus on the most actionable recommendation given the current state. Don't list everything — pick the ONE most important move. Speak like a operator, not a chatbot.`,
         messages: [{
           role: 'user',
           content: `Current battlefield state: ${JSON.stringify(gameState)}. What is my highest priority move this turn?`
@@ -2106,7 +2951,7 @@ const REWARDED_OFFERS = [
   { title: 'FIELD SUPPLY DROP', desc: 'Watch a short video to receive emergency supplies from Command HQ.', icon: '🎬', reward: { gold: 300 }, display: '+300 GOLD' },
   { title: 'INDUSTRY AIRDROP', desc: 'Sponsor a supply convoy. Watch a video to boost your industrial output.', icon: '⚙', reward: { industry: 200 }, display: '+200 INDUSTRY' },
   { title: 'MANPOWER RESERVE', desc: 'Watch a video to call in a reserve battalion to reinforce your lines.', icon: '🪖', reward: { manpower: 250, gold: 100 }, display: '+250 MAN +100G' },
-  { title: 'EMERGENCY MEDALS', desc: 'Watch a video to earn campaign medals redeemable for general upgrades.', icon: '🏅', reward: { gold: 500 }, display: '+500 GOLD' },
+  { title: 'EMERGENCY MEDALS', desc: 'Watch a video to earn campaign medals redeemable for operator upgrades.', icon: '🏅', reward: { gold: 500 }, display: '+500 GOLD' },
 ];
 
 // ── REWARDED AD ──
